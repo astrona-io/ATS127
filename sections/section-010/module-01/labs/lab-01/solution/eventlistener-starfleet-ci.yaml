@@ -1,0 +1,14 @@
+# Reference: the EventListener with one inline Trigger.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run

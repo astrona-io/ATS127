@@ -1,0 +1,39 @@
+# The EventListener the lab starts with. It has two faults:
+# 1. secretRef names the key "token", but the Secret github-webhook-secret
+#    stores the webhook secret under "secretToken", so the github interceptor
+#    stops every event with "error getting secret".
+# 2. The CEL filter lets through pushes to master; the team's branch is main.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      interceptors:
+        - name: verify-github-push
+          ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-webhook-secret
+                secretKey: token
+            - name: eventTypes
+              value: ["push"]
+        - name: only-main
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.ref == 'refs/heads/master'"
+            - name: overlays
+              value:
+                - key: branch_name
+                  expression: "body.ref.split('/')[2]"
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run

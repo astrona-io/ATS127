@@ -1,0 +1,33 @@
+# The pull request Trigger as the capstone starts. It has a fault: the event
+# type is written "pull-request", but GitHub sends "pull_request". It creates
+# its runs as the ServiceAccount starfleet-pr-runner.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: github-pull-request
+  namespace: starfleet
+  labels:
+    team: starfleet
+spec:
+  serviceAccountName: starfleet-pr-runner
+  interceptors:
+    - name: verify-github-pull-request
+      ref:
+        name: github
+      params:
+        - name: secretRef
+          value:
+            secretName: github-webhook-secret
+            secretKey: secretToken
+        - name: eventTypes
+          value: ["pull-request"]
+    - name: only-open-pull-requests-to-main
+      ref:
+        name: cel
+      params:
+        - name: filter
+          value: "body.action in ['opened', 'synchronize', 'reopened'] && body.pull_request.base.ref == 'main'"
+  bindings:
+    - ref: github-pull-request
+  template:
+    ref: pr-check-run

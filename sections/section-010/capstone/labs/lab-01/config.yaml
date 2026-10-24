@@ -1,0 +1,61 @@
+# Repair An EventListener That Starts No Runs (capstone)
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-127-capstone-010"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton"
+      description: "Installs the tkn CLI 0.46.2, Tekton Pipelines v1.17.1 and Tekton Triggers v0.37.2 with the core interceptors, and starts the webhook client"
+      type: "file"
+      source: "bootstrap/01-install-tekton.sh"
+    - name: "ats-127-capstone-010-setup"
+      description: "Applies the Pipeline, the TriggerTemplate, the ServiceAccount without its RoleBinding, the ClusterTriggerBinding and the EventListener starfleet-ci"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespace starfleet"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-tekton"
+      description: "Waits until every Tekton Deployment and the webhook client are ready"
+      type: "file"
+      source: "testing/wait-for-tekton.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-eventlistener-ready"
+      description: "Confirms the EventListener starfleet-ci uses the ServiceAccount starfleet-triggers and is Ready"
+      type: "file"
+      source: "validation/validate-eventlistener-ready.sh"
+    - name: "validate-rbac"
+      description: "Confirms starfleet-triggers is bound to the two Triggers ClusterRoles and has no broad rights"
+      type: "file"
+      source: "validation/validate-rbac.sh"
+    - name: "validate-clustertriggerbinding"
+      description: "Confirms the Trigger uses the ClusterTriggerBinding github-push and no namespaced copy exists"
+      type: "file"
+      source: "validation/validate-clustertriggerbinding.sh"
+    - name: "validate-push-creates-run"
+      description: "Sends a push event and confirms a ci-build PipelineRun with the event's values succeeds"
+      type: "file"
+      source: "validation/validate-push-creates-run.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - nicolaka/netshoot:v0.13

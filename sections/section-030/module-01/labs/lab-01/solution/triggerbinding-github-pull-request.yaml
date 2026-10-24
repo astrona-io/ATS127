@@ -1,0 +1,15 @@
+# Reads a GitHub pull_request event: the clone URL, the head commit of the
+# pull request and its number.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-pull-request
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.pull_request.head.sha)
+    - name: pr-number
+      value: $(body.number)

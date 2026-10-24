@@ -1,0 +1,15 @@
+# Reference fix 2: the binding reference names its kind.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+          kind: ClusterTriggerBinding
+      template:
+        ref: ci-build-run

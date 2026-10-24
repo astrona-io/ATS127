@@ -1,0 +1,11 @@
+# Reference fix 1: the selector matches the label of both Triggers.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  labelSelector:
+    matchLabels:
+      team: starfleet

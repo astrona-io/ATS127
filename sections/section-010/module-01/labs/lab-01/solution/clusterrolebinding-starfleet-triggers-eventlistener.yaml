@@ -1,0 +1,14 @@
+# Reference: the cluster-scoped permissions from the Triggers release (read
+# ClusterTriggerBindings and ClusterInterceptors) for the same ServiceAccount.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: starfleet-triggers-eventlistener
+subjects:
+  - kind: ServiceAccount
+    name: starfleet-triggers
+    namespace: starfleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles

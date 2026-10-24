@@ -1,0 +1,31 @@
+# The TriggerTemplate the lab starts with. It is correct: it creates one
+# PipelineRun of ci-build per event and expects the parameters repo-url,
+# revision and branch from a binding.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: ci-build-run
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      description: The clone URL of the repository
+    - name: revision
+      description: The commit ID to build
+    - name: branch
+      description: The branch that was pushed
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: ci-build-run-
+      spec:
+        pipelineRef:
+          name: ci-build
+        params:
+          - name: repo-url
+            value: $(tt.params.repo-url)
+          - name: revision
+            value: $(tt.params.revision)
+          - name: branch
+            value: $(tt.params.branch)

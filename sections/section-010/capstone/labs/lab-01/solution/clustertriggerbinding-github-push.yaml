@@ -1,0 +1,13 @@
+# Reference fix 3: the commit ID of a push is head_commit.id.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: ClusterTriggerBinding
+metadata:
+  name: github-push
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head_commit.id)
+    - name: branch
+      value: $(body.ref)

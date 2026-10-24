@@ -1,0 +1,13 @@
+# The EventListener as the capstone starts. It has a fault: it selects
+# Triggers with the label team: starfleet-ci, but both Triggers carry
+# team: starfleet, so no Trigger runs for any event.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  labelSelector:
+    matchLabels:
+      team: starfleet-ci

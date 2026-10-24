@@ -1,0 +1,14 @@
+# Reference fix 1: the missing RoleBinding to the namespaced Triggers role.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: starfleet-triggers-eventlistener
+  namespace: starfleet
+subjects:
+  - kind: ServiceAccount
+    name: starfleet-triggers
+    namespace: starfleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles

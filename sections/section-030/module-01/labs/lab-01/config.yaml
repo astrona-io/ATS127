@@ -1,0 +1,65 @@
+# Add A Pull Request Trigger
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-127-lab-030-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton"
+      description: "Installs the tkn CLI 0.46.2, Tekton Pipelines v1.17.1 and Tekton Triggers v0.37.2 with the core interceptors, and starts the webhook client"
+      type: "file"
+      source: "bootstrap/01-install-tekton.sh"
+    - name: "ats-127-lab-030-01-setup"
+      description: "Applies both Pipelines, RBAC, the webhook Secret, the push binding, template and Trigger, and the EventListener starfleet-ci with a label selector"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespace starfleet"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-tekton"
+      description: "Waits until every Tekton Deployment and the webhook client are ready"
+      type: "file"
+      source: "testing/wait-for-tekton.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner does; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-eventlistener-ready"
+      description: "Confirms the EventListener starfleet-ci uses the ServiceAccount starfleet-triggers and is Ready"
+      type: "file"
+      source: "validation/validate-eventlistener-ready.sh"
+    - name: "validate-standalone-triggers"
+      description: "Confirms the EventListener selects the standalone Triggers github-push and github-pull-request by label"
+      type: "file"
+      source: "validation/validate-standalone-triggers.sh"
+    - name: "validate-pull-request-run"
+      description: "Sends a signed, opened pull request and confirms one pr-check PipelineRun with its values succeeds"
+      type: "file"
+      source: "validation/validate-pull-request-run.sh"
+    - name: "validate-pull-request-filters"
+      description: "Sends a closed, a wrong-base and an unsigned pull request and confirms none creates a PipelineRun"
+      type: "file"
+      source: "validation/validate-pull-request-filters.sh"
+    - name: "validate-push-still-works"
+      description: "Sends a signed push to main and confirms exactly one ci-build PipelineRun succeeds"
+      type: "file"
+      source: "validation/validate-push-still-works.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - nicolaka/netshoot:v0.13

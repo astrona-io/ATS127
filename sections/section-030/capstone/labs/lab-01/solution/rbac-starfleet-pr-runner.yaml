@@ -1,0 +1,26 @@
+# Reference fix 3: starfleet-pr-runner may create PipelineRuns in starfleet,
+# and nothing else. The EventListener impersonates it for the pull request
+# Trigger.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pipelinerun-creator
+  namespace: starfleet
+rules:
+  - apiGroups: ["tekton.dev"]
+    resources: ["pipelineruns"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: starfleet-pr-runner-pipelinerun-creator
+  namespace: starfleet
+subjects:
+  - kind: ServiceAccount
+    name: starfleet-pr-runner
+    namespace: starfleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pipelinerun-creator

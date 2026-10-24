@@ -1,0 +1,284 @@
+# Course manifest for ATS127 - Triggers, Interceptors & Event-Driven CI (Tekton).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section capstone closes the section. Playgrounds are not
+# listed: the landing page's playground marker shows them. solution.md is
+# never listed.
+#
+# Every `path:` is relative to this file.
+
+training:
+  id: ATS127
+  title: "Tekton: Triggers, Interceptors & Event-Driven CI"
+  maturity: draft
+  description: >
+    Training material covering the Triggers, Interceptors & Event-Driven CI
+    domain of the Tekton training path: installing Tekton Triggers on top of
+    Tekton Pipelines, the EventListener with its Deployment, Service,
+    ServiceAccount and RBAC, Triggers, TriggerBindings, ClusterTriggerBindings
+    and TriggerTemplates with tt.params, interceptors and ClusterInterceptors,
+    verifying GitHub webhooks with an HMAC secret, filtering and enriching
+    events with CEL, and running push and pull request CI through standalone
+    Triggers, with event tracing and cleanup. Webhooks are signed and sent from
+    a client pod inside the cluster, so no Git hosting account is needed. Each
+    module pairs a layered reader with an ungraded hands-on playground and a
+    graded practice lab. Each section closes with an integration capstone.
+    Written for Tekton Triggers v0.37.2, Tekton Pipelines v1.17.1 and tkn
+    v0.46.2.
+
+  certification:
+    name: Tekton
+    code: TEKTON
+    provider: Astrona
+    domain: "Triggers, Interceptors & Event-Driven CI"
+    weight: 15
+
+modules:
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "Tekton Triggers Architecture And RBAC"
+    description: >
+      Installing Tekton Triggers and its core interceptors, the Triggers
+      resources, the EventListener with its Deployment, Service and pod, the
+      ServiceAccount and the RBAC from the Triggers release, and mapping event
+      fields to PipelineRun parameters with TriggerBindings,
+      ClusterTriggerBindings and TriggerTemplates.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Turn A Webhook Into A PipelineRun"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "Install Tekton Triggers And Meet Its Resources"
+        path: sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+      - type: reading
+        title: "The EventListener, Its ServiceAccount And RBAC"
+        path: sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+      - type: reading
+        title: "TriggerBindings, TriggerTemplates And tt.params"
+        path: sections/section-010/module-01/course-03-bindings-templates-and-tt-params.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Create An EventListener For Push Events Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 25m
+        topic: triggers-architecture
+        task_kind: build
+        tags: [eventlistener, eventlistener-rbac, serviceaccount, triggerbinding, triggertemplate, push-event]
+        learning_goals:
+          - Create an EventListener with a ServiceAccount bound to the two Triggers ClusterRoles
+          - Map the fields of a push event to PipelineRun parameters with a TriggerBinding
+          - Prove the setup with a push event that starts a PipelineRun with the event's values
+        resources:
+          - name: "EventListeners"
+            url: https://tekton.dev/docs/triggers/eventlisteners/
+          - name: "TriggerBindings"
+            url: https://tekton.dev/docs/triggers/triggerbindings/
+          - name: "TriggerTemplates"
+            url: https://tekton.dev/docs/triggers/triggertemplates/
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Repair An EventListener That Starts No Runs Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: triggers-architecture
+        task_kind: troubleshooting
+        tags: [eventlistener, eventlistener-rbac, clustertriggerbinding, triggerbinding, tt-params, push-event]
+        learning_goals:
+          - Find why an EventListener pod never becomes ready and fix its RBAC without broad rights
+          - Read the EventListener's log to find a binding of the wrong kind and a path the payload does not have
+          - Prove the repair with a push event that starts a PipelineRun with the event's values
+        resources:
+          - name: "EventListeners"
+            url: https://tekton.dev/docs/triggers/eventlisteners/
+          - name: "TriggerBindings"
+            url: https://tekton.dev/docs/triggers/triggerbindings/
+          - name: "Troubleshooting Triggers"
+            url: https://tekton.dev/docs/triggers/troubleshooting/
+
+  - id: module-020
+    title: "Verify And Filter Events With Interceptors"
+    description: >
+      How interceptors and ClusterInterceptors work and where a rejected event
+      leaves its trace, verifying GitHub webhooks with an HMAC secret and
+      eventTypes, the GitLab and Bitbucket interceptors, and filtering and
+      enriching events with CEL filters and overlays.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Verify And Filter Webhooks With Interceptors"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "How Interceptors Work"
+        path: sections/section-020/module-01/course-01-how-interceptors-work.md
+      - type: reading
+        title: "Verify GitHub Webhooks With An HMAC Secret"
+        path: sections/section-020/module-01/course-02-verify-github-webhooks.md
+      - type: reading
+        title: "Filter And Enrich Events With CEL"
+        path: sections/section-020/module-01/course-03-filter-and-enrich-with-cel.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Repair Signature Checks And A CEL Filter Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: interceptors
+        task_kind: troubleshooting
+        tags: [github-interceptor, webhook-secret, hmac-signature, cel-filter, event-types, interceptor-chain]
+        learning_goals:
+          - Read the core interceptors' log to find why signed events create no PipelineRun
+          - Fix a wrong secret key and a CEL filter without weakening the checks
+          - Prove that signed pushes to main start a build while unsigned, wrongly signed and filtered events do not
+        resources:
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+          - name: "CEL expression extensions"
+            url: https://tekton.dev/docs/triggers/cel_expressions/
+          - name: "ClusterInterceptors"
+            url: https://tekton.dev/docs/triggers/clusterinterceptors/
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Harden An Open EventListener Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: interceptors
+        task_kind: build
+        tags: [github-interceptor, webhook-secret, hmac-signature, event-types, cel-filter, cel-overlays, interceptor-chain]
+        learning_goals:
+          - Store a webhook secret and verify GitHub signatures and event types with the github interceptor
+          - Let only pushes to main through with a CEL filter and pass the short branch name through an overlay
+          - Prove the chain with signed, unsigned and filtered events
+        resources:
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+          - name: "CEL expression extensions"
+            url: https://tekton.dev/docs/triggers/cel_expressions/
+          - name: "TriggerBindings"
+            url: https://tekton.dev/docs/triggers/triggerbindings/
+
+  - id: module-030
+    title: "Event-Driven CI End To End"
+    description: >
+      The fields of GitHub push and pull request events, standalone Triggers
+      selected by an EventListener's label selector, a pull request Trigger
+      next to a push Trigger, Trigger ServiceAccounts and impersonation, and
+      tracing events by their event ID and cleaning up event-driven runs.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Run CI On Push And Pull Request Events"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "GitHub Push And Pull Request Payloads"
+        path: sections/section-030/module-01/course-01-push-and-pull-request-payloads.md
+      - type: reading
+        title: "One EventListener, Several Triggers"
+        path: sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Add A Pull Request Trigger Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: event-driven-ci
+        task_kind: build
+        tags: [pull-request-event, trigger, label-selector, triggerbinding, triggertemplate, cel-filter, pipelinerun]
+        learning_goals:
+          - Map a pull request event to the parameters of a check Pipeline with a binding and a template
+          - Add a standalone Trigger that an EventListener selects by label, with its own interceptors
+          - Prove that pull requests start the check while pushes, closed pull requests and unsigned events do not
+        resources:
+          - name: "Triggers"
+            url: https://tekton.dev/docs/triggers/triggers/
+          - name: "EventListeners"
+            url: https://tekton.dev/docs/triggers/eventlisteners/
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+      - type: reading
+        title: "Trace And Clean Up Event-Driven Runs"
+        path: sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Repair An Event-Driven CI System Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 35m
+        topic: event-driven-ci
+        task_kind: troubleshooting
+        tags: [label-selector, event-types, trigger-serviceaccount, event-id, pull-request-event, push-event, pipelinerun]
+        learning_goals:
+          - Trace signed events by their event ID to find where each one stops
+          - Fix a label selector, an event type and a Trigger ServiceAccount without broad rights
+          - Prove that pushes start ci-build and pull requests start pr-check, and nothing else
+        resources:
+          - name: "EventListeners"
+            url: https://tekton.dev/docs/triggers/eventlisteners/
+          - name: "Triggers"
+            url: https://tekton.dev/docs/triggers/triggers/
+          - name: "Troubleshooting Triggers"
+            url: https://tekton.dev/docs/triggers/troubleshooting/

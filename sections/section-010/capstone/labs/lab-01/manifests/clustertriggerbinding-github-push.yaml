@@ -1,0 +1,15 @@
+# The cluster-wide binding for GitHub push events. It has a fault: a push
+# payload has head_commit.id, not head_commit.sha, and the template parameter
+# revision has no default, so the EventListener creates nothing.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: ClusterTriggerBinding
+metadata:
+  name: github-push
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head_commit.sha)
+    - name: branch
+      value: $(body.ref)

@@ -1,0 +1,32 @@
+# Reference fix 2: GitHub sends the event type pull_request, with an
+# underscore. The Trigger keeps its own ServiceAccount starfleet-pr-runner.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: github-pull-request
+  namespace: starfleet
+  labels:
+    team: starfleet
+spec:
+  serviceAccountName: starfleet-pr-runner
+  interceptors:
+    - name: verify-github-pull-request
+      ref:
+        name: github
+      params:
+        - name: secretRef
+          value:
+            secretName: github-webhook-secret
+            secretKey: secretToken
+        - name: eventTypes
+          value: ["pull_request"]
+    - name: only-open-pull-requests-to-main
+      ref:
+        name: cel
+      params:
+        - name: filter
+          value: "body.action in ['opened', 'synchronize', 'reopened'] && body.pull_request.base.ref == 'main'"
+  bindings:
+    - ref: github-pull-request
+  template:
+    ref: pr-check-run

@@ -1,0 +1,123 @@
+# The webhook client: a pod with curl and openssl that sends GitHub-style
+# webhooks to the EventListener Service from inside the cluster. The sample
+# payloads are mounted read-only in /payloads. No repository and no GitHub
+# account are involved: the payloads only look like GitHub's.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webhook-payloads
+  namespace: starfleet
+data:
+  push-main.json: |
+    {
+      "ref": "refs/heads/main",
+      "before": "9c1e4b7a2d5f8e3c6b9a0d1f4e7c2b5a8d3f6e9c",
+      "after": "4f1c2a9e8b7d6c5f4e3d2c1b0a9f8e7d6c5b4a39",
+      "repository": {
+        "full_name": "starfleet/bridge",
+        "clone_url": "https://git.example.com/starfleet/bridge.git"
+      },
+      "pusher": {
+        "name": "scout"
+      },
+      "head_commit": {
+        "id": "4f1c2a9e8b7d6c5f4e3d2c1b0a9f8e7d6c5b4a39",
+        "message": "Update the status page"
+      }
+    }
+  push-feature.json: |
+    {
+      "ref": "refs/heads/feature-shields",
+      "before": "4f1c2a9e8b7d6c5f4e3d2c1b0a9f8e7d6c5b4a39",
+      "after": "7a3d9e1b5c8f2a6d0e4b7c1f9a2d5e8b3c6f0a14",
+      "repository": {
+        "full_name": "starfleet/bridge",
+        "clone_url": "https://git.example.com/starfleet/bridge.git"
+      },
+      "pusher": {
+        "name": "shuttle"
+      },
+      "head_commit": {
+        "id": "7a3d9e1b5c8f2a6d0e4b7c1f9a2d5e8b3c6f0a14",
+        "message": "Add a shield test"
+      }
+    }
+  pull-request-opened.json: |
+    {
+      "action": "opened",
+      "number": 7,
+      "pull_request": {
+        "number": 7,
+        "title": "Add a shield test",
+        "head": {
+          "ref": "feature-shields",
+          "sha": "7a3d9e1b5c8f2a6d0e4b7c1f9a2d5e8b3c6f0a14"
+        },
+        "base": {
+          "ref": "main",
+          "sha": "4f1c2a9e8b7d6c5f4e3d2c1b0a9f8e7d6c5b4a39"
+        }
+      },
+      "repository": {
+        "full_name": "starfleet/bridge",
+        "clone_url": "https://git.example.com/starfleet/bridge.git"
+      },
+      "sender": {
+        "login": "shuttle"
+      }
+    }
+  pull-request-closed.json: |
+    {
+      "action": "closed",
+      "number": 7,
+      "pull_request": {
+        "number": 7,
+        "title": "Add a shield test",
+        "head": {
+          "ref": "feature-shields",
+          "sha": "7a3d9e1b5c8f2a6d0e4b7c1f9a2d5e8b3c6f0a14"
+        },
+        "base": {
+          "ref": "main",
+          "sha": "4f1c2a9e8b7d6c5f4e3d2c1b0a9f8e7d6c5b4a39"
+        }
+      },
+      "repository": {
+        "full_name": "starfleet/bridge",
+        "clone_url": "https://git.example.com/starfleet/bridge.git"
+      },
+      "sender": {
+        "login": "shuttle"
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-client
+  namespace: starfleet
+  labels:
+    app: webhook-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-client
+  template:
+    metadata:
+      labels:
+        app: webhook-client
+    spec:
+      containers:
+        - name: client
+          image: nicolaka/netshoot:v0.13
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          volumeMounts:
+            - name: payloads
+              mountPath: /payloads
+              readOnly: true
+      volumes:
+        - name: payloads
+          configMap:
+            name: webhook-payloads

@@ -1,0 +1,16 @@
+# The EventListener as the capstone starts. It has a fault: the binding
+# reference has no kind, so the EventListener looks for a namespaced
+# TriggerBinding named github-push, which does not exist.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run

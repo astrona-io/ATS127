@@ -1,0 +1,32 @@
+# The Trigger for pull request events. It accepts signed pull_request events
+# whose action is opened, synchronize or reopened and whose base branch is
+# main, and starts pr-check.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: github-pull-request
+  namespace: starfleet
+  labels:
+    team: starfleet
+spec:
+  interceptors:
+    - name: verify-github-pull-request
+      ref:
+        name: github
+      params:
+        - name: secretRef
+          value:
+            secretName: github-webhook-secret
+            secretKey: secretToken
+        - name: eventTypes
+          value: ["pull_request"]
+    - name: only-open-pull-requests-to-main
+      ref:
+        name: cel
+      params:
+        - name: filter
+          value: "body.action in ['opened', 'synchronize', 'reopened'] && body.pull_request.base.ref == 'main'"
+  bindings:
+    - ref: github-pull-request
+  template:
+    ref: pr-check-run

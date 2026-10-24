@@ -1,0 +1,16 @@
+# The EventListener the capstone starts with. It has no interceptors: every
+# JSON request to el-starfleet-ci creates a PipelineRun, signed or not, for
+# every branch. Hardening it is the task.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run

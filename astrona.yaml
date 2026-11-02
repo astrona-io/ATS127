@@ -33,8 +33,6 @@ training:
     name: Tekton
     code: TEKTON
     provider: Astrona
-    domain: "Triggers, Interceptors & Event-Driven CI"
-    weight: 15
 
 modules:
 

@@ -1,0 +1,245 @@
+# Knowledge check for section-020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats127-020
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Verify And Filter Events With Interceptors"
+placement:
+  position: after
+  reading: sections/section-020/capstone/labs/lab-01/question.md
+questions:
+  - id: ats127-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain why bindings cannot reject events"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-interceptors-work.md
+    prompt: "A request with a made-up branch and a commit ID that is not a commit ID starts a build. Why?"
+    options:
+      - id: a
+        text: "The EventListener validates only the HTTP method."
+        explanation: "Not correct. The method is not the cause. No component checks the content."
+      - id: b
+        text: "The PipelineRun checks the commit ID later."
+        explanation: "Not correct. The run starts with the values it gets."
+      - id: c
+        text: "A TriggerBinding and a TriggerTemplate only copy fields. Nothing in them can reject an event."
+        explanation: "Correct. Rejecting is the job of interceptors."
+      - id: d
+        text: "The Triggers webhook checks every event."
+        explanation: "Not correct. The Triggers webhook checks objects you apply, not events."
+    correct_option: c
+    explanation: "Correct. Rejecting is the job of interceptors."
+
+  - id: ats127-020-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe how interceptors pass data on"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-interceptors-work.md
+    prompt: "How does an interceptor give data to the next interceptor and to the binding?"
+    options:
+      - id: a
+        text: "It adds it under the top-level field extensions, which a binding reads as $(extensions.<key>)."
+        explanation: "Correct. The body stays as it was sent."
+      - id: b
+        text: "It rewrites the fields of the body."
+        explanation: "Not correct. Interceptors do not change the body."
+      - id: c
+        text: "It adds new request headers."
+        explanation: "Not correct. Headers are not used to pass this data."
+      - id: d
+        text: "It stores the data in a ConfigMap."
+        explanation: "Not correct. The data travels inside the request chain."
+    correct_option: a
+    explanation: "Correct. The body stays as it was sent."
+
+  - id: ats127-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find where interceptor decisions are logged"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-interceptors-work.md
+    prompt: "An event returns 202 but creates no run. Where do you read why an interceptor stopped it?"
+    options:
+      - id: a
+        text: "In the log of the EventListener pod only."
+        explanation: "Not correct. The EventListener does not log the interceptor's reason at the default level."
+      - id: b
+        text: "In the HTTP response body."
+        explanation: "Not correct. The body only has the eventID and EventListener fields."
+      - id: c
+        text: "In the log of tekton-triggers-webhook."
+        explanation: "Not correct. That Deployment checks objects you apply."
+      - id: d
+        text: "In the log of the tekton-triggers-core-interceptors Deployment in tekton-pipelines."
+        explanation: "Correct. It logs each answer as Interceptor response is, with Continue:false for a stop."
+    correct_option: d
+    explanation: "Correct. It logs each answer as Interceptor response is, with Continue:false for a stop."
+
+  - id: ats127-020-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the limit of eventTypes"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-interceptors-work.md
+    prompt: "A github interceptor has only eventTypes: [push]. What is its weakness?"
+    options:
+      - id: a
+        text: "It cannot check the event type."
+        explanation: "Not correct. Checking the type is its job."
+      - id: b
+        text: "It reads the header X-GitHub-Event, which any client can set."
+        explanation: "Correct. It filters events but does not verify the sender."
+      - id: c
+        text: "It sends the event to every Trigger."
+        explanation: "Not correct. Each Trigger has its own chain."
+      - id: d
+        text: "It changes the body of the event."
+        explanation: "Not correct. Interceptors do not change the body."
+    correct_option: b
+    explanation: "Correct. It filters events but does not verify the sender."
+
+  - id: ats127-020-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a CEL filter result"
+    source_readings:
+      - sections/section-020/module-01/course-03-filter-and-enrich-with-cel.md
+    prompt: "A cel interceptor filter returns false for an event. What happens?"
+    options:
+      - id: a
+        text: "The sender receives an HTTP 403."
+        explanation: "Not correct. The 202 is sent before the interceptors run."
+      - id: b
+        text: "The interceptor stops the event with the message expression <filter> did not return true, and no run is created."
+        explanation: "Correct. The sender still receives 202."
+      - id: c
+        text: "The binding runs with empty values."
+        explanation: "Not correct. A stop ends the chain before the binding."
+      - id: d
+        text: "The interceptor skips to the next one."
+        explanation: "Not correct. The first stop ends the chain of that Trigger."
+    correct_option: b
+    explanation: "Correct. The sender still receives 202."
+
+  - id: ats127-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what an HMAC signature proves"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "What does the signature in X-Hub-Signature-256 prove?"
+    options:
+      - id: a
+        text: "The body is encrypted on the way."
+        explanation: "Not correct. Anyone on the path can still read the body."
+      - id: b
+        text: "The request came from an IP address of GitHub."
+        explanation: "Not correct. The signature says nothing about IP addresses."
+      - id: c
+        text: "The event type is push."
+        explanation: "Not correct. The event type is in X-GitHub-Event and is not signed."
+      - id: d
+        text: "The sender knew the secret and the body was not changed. It does not hide the body."
+        explanation: "Correct. The receiver computes the same HMAC and compares."
+    correct_option: d
+    explanation: "Correct. The receiver computes the same HMAC and compares."
+
+  - id: ats127-020-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know the signature header"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "Which header does the github interceptor use to check an HMAC signature?"
+    options:
+      - id: a
+        text: "X-Hub-Signature-256"
+        explanation: "Correct. The older X-Hub-Signature with SHA-1 is not read."
+      - id: b
+        text: "X-Hub-Signature"
+        explanation: "Not correct. This older header uses SHA-1. The github interceptor ignores it."
+      - id: c
+        text: "X-GitHub-Event"
+        explanation: "Not correct. This header holds the event type."
+      - id: d
+        text: "X-Gitlab-Token"
+        explanation: "Not correct. This header belongs to the gitlab interceptor."
+    correct_option: a
+    explanation: "Correct. The older X-Hub-Signature with SHA-1 is not read."
+
+  - id: ats127-020-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know who reads the webhook Secret"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "Which pod reads the Secret that secretRef names in a github interceptor?"
+    options:
+      - id: a
+        text: "The EventListener pod."
+        explanation: "Not correct. It only calls the interceptor."
+      - id: b
+        text: "The webhook-client pod."
+        explanation: "Not correct. That pod only sends test requests."
+      - id: c
+        text: "The tekton-triggers-core-interceptors pod, with its own ServiceAccount."
+        explanation: "Correct. The EventListener pod does not read the Secret."
+      - id: d
+        text: "The Triggers controller pod."
+        explanation: "Not correct. The controller creates EventListener Deployments and does not read this Secret."
+    correct_option: c
+    explanation: "Correct. The EventListener pod does not read the Secret."
+
+  - id: ats127-020-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain a failed signature check"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "You sign a payload file with openssl and send it with curl -d. The signature check fails. Why?"
+    options:
+      - id: a
+        text: "openssl cannot compute SHA-256."
+        explanation: "Not correct. openssl dgst -sha256 -hmac computes the signature."
+      - id: b
+        text: "The Secret must be base64 encoded in the header."
+        explanation: "Not correct. The header holds the hex digest."
+      - id: c
+        text: "curl -d changes the body, for example by removing line breaks, so the signed bytes and the sent bytes differ."
+        explanation: "Correct. Use --data-binary so the file is sent unchanged."
+      - id: d
+        text: "The signature header must be sent twice."
+        explanation: "Not correct. One X-Hub-Signature-256 header is enough."
+    correct_option: c
+    explanation: "Correct. Use --data-binary so the file is sent unchanged."
+
+  - id: ats127-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an overlay in a binding"
+    source_readings:
+      - sections/section-020/module-01/course-03-filter-and-enrich-with-cel.md
+    prompt: "A cel interceptor has an overlay with the key branch_name. How does a TriggerBinding read it?"
+    options:
+      - id: a
+        text: "$(extensions.branch_name)"
+        explanation: "Correct. Overlays are stored under extensions."
+      - id: b
+        text: "$(body.branch_name)"
+        explanation: "Not correct. The body is not changed by overlays."
+      - id: c
+        text: "$(header.branch_name)"
+        explanation: "Not correct. Overlays do not add headers."
+      - id: d
+        text: "$(tt.params.branch_name)"
+        explanation: "Not correct. That reads a template parameter inside a resource template."
+    correct_option: a
+    explanation: "Correct. Overlays are stored under extensions."

@@ -1,0 +1,245 @@
+# Knowledge check for section-030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats127-030
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "Event-Driven CI End To End"
+placement:
+  position: after
+  reading: sections/section-030/capstone/labs/lab-01/question.md
+questions:
+  - id: ats127-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find the commit of a pull request"
+    source_readings:
+      - sections/section-030/module-01/course-01-push-and-pull-request-payloads.md
+    prompt: "Which field of a pull_request event holds the commit that a check should run on?"
+    options:
+      - id: a
+        text: "pull_request.base.sha"
+        explanation: "Not correct. That is the commit of the target branch."
+      - id: b
+        text: "head_commit.id"
+        explanation: "Not correct. That field exists in push events, not in pull_request events."
+      - id: c
+        text: "ref"
+        explanation: "Not correct. A pull_request event has no top-level ref."
+      - id: d
+        text: "pull_request.head.sha"
+        explanation: "Correct. It is the latest commit of the proposed change."
+    correct_option: d
+    explanation: "Correct. It is the latest commit of the proposed change."
+
+  - id: ats127-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Pick the actions that change code"
+    source_readings:
+      - sections/section-030/module-01/course-01-push-and-pull-request-payloads.md
+    prompt: "Which pull_request actions should start a check?"
+    options:
+      - id: a
+        text: "opened, synchronize and reopened."
+        explanation: "Correct. These actions mean new or changed code."
+      - id: b
+        text: "closed and merged."
+        explanation: "Not correct. A closed pull request needs no check."
+      - id: c
+        text: "edited, labeled and assigned."
+        explanation: "Not correct. These change title, labels or people, not code."
+      - id: d
+        text: "opened, closed and labeled."
+        explanation: "Not correct. closed and labeled do not change code."
+    correct_option: a
+    explanation: "Correct. These actions mean new or changed code."
+
+  - id: ats127-030-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain a deleted-branch push"
+    source_readings:
+      - sections/section-030/module-01/course-01-push-and-pull-request-payloads.md
+    prompt: "A binding that reads $(body.head_commit.id) fails for the push that deletes a branch. Why?"
+    options:
+      - id: a
+        text: "A deleted branch push has no repository field."
+        explanation: "Not correct. The repository field is still there."
+      - id: b
+        text: "For a deleted branch, head_commit is null and after is forty zeros."
+        explanation: "Correct. A filter should keep such pushes out."
+      - id: c
+        text: "head_commit.id exists only for tags."
+        explanation: "Not correct. Tag pushes have refs/tags/... in ref."
+      - id: d
+        text: "GitHub sends deletes as pull_request events."
+        explanation: "Not correct. A deleted branch is still a push event."
+    correct_option: b
+    explanation: "Correct. A filter should keep such pushes out."
+
+  - id: ats127-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Clean up runs of one Trigger"
+    source_readings:
+      - sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+    prompt: "Which command keeps the newest run of the Trigger github-push and deletes its older runs only?"
+    options:
+      - id: a
+        text: "tkn pipelinerun delete -n starfleet --all -f"
+        explanation: "Not correct. It deletes every run in the namespace."
+      - id: b
+        text: "tkn pipelinerun delete -n starfleet --keep 1 -f"
+        explanation: "Not correct. Without a label, --keep counts all runs in the namespace."
+      - id: c
+        text: "tkn pipelinerun delete -n starfleet --label triggers.tekton.dev/trigger=github-push --keep 1 -f"
+        explanation: "Correct. --label limits the work to runs of that Trigger."
+      - id: d
+        text: "kubectl delete eventlistener starfleet-ci"
+        explanation: "Not correct. That removes the EventListener, not the old runs."
+    correct_option: c
+    explanation: "Correct. --label limits the work to runs of that Trigger."
+
+  - id: ats127-030-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know why a Trigger is never selected"
+    source_readings:
+      - sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+    prompt: "An EventListener uses labelSelector with team: starfleet. A Trigger exists in the namespace without that label. What happens?"
+    options:
+      - id: a
+        text: "The EventListener never selects the Trigger."
+        explanation: "Correct. A Trigger needs the matching label to take part."
+      - id: b
+        text: "The Trigger runs but only for push events."
+        explanation: "Not correct. Without the label it does not run at all."
+      - id: c
+        text: "The Triggers webhook refuses to create it."
+        explanation: "Not correct. The Trigger is a valid object."
+      - id: d
+        text: "The EventListener pod becomes not ready."
+        explanation: "Not correct. The EventListener stays ready and answers 202."
+    correct_option: a
+    explanation: "Correct. A Trigger needs the matching label to take part."
+
+  - id: ats127-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know when labelSelector is evaluated"
+    source_readings:
+      - sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+    prompt: "When does an EventListener evaluate its labelSelector?"
+    options:
+      - id: a
+        text: "Only when the EventListener is created."
+        explanation: "Not correct. Then new Triggers would need an EventListener change."
+      - id: b
+        text: "Only when the Triggers controller restarts."
+        explanation: "Not correct. No restart is needed."
+      - id: c
+        text: "Once per hour."
+        explanation: "Not correct. There is no schedule."
+      - id: d
+        text: "For every event."
+        explanation: "Correct. A new Trigger with a matching label takes part from the next event on."
+    correct_option: d
+    explanation: "Correct. A new Trigger with a matching label takes part from the next event on."
+
+  - id: ats127-030-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Trace a closed pull request"
+    source_readings:
+      - sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+    prompt: "A signed pull_request event with action closed goes to an EventListener with a push Trigger and a pull request Trigger. What stops it in the pull request Trigger?"
+    options:
+      - id: a
+        text: "Its signature check."
+        explanation: "Not correct. The signature is valid, so that interceptor continues."
+      - id: b
+        text: "Its CEL filter, because the action is not opened, synchronize or reopened."
+        explanation: "Correct. The github interceptor of that Trigger lets it through first."
+      - id: c
+        text: "The label selector of the EventListener."
+        explanation: "Not correct. The Trigger has the label and is selected."
+      - id: d
+        text: "Its TriggerTemplate."
+        explanation: "Not correct. A template cannot reject events."
+    correct_option: b
+    explanation: "Correct. The github interceptor of that Trigger lets it through first."
+
+  - id: ats127-030-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Find a Trigger ServiceAccount problem"
+    source_readings:
+      - sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+    prompt: "A Trigger sets serviceAccountName to a ServiceAccount that has no create permission on pipelineruns. The interceptors pass. What happens?"
+    options:
+      - id: a
+        text: "The EventListener uses its own ServiceAccount instead."
+        explanation: "Not correct. The Trigger's ServiceAccount is used when it is set."
+      - id: b
+        text: "The interceptors stop the event."
+        explanation: "Not correct. The failure happens after the interceptors."
+      - id: c
+        text: "The EventListener logs a forbidden error when it creates the run, and no run appears."
+        explanation: "Correct. It impersonates the Trigger's ServiceAccount for the creation."
+      - id: d
+        text: "The sender receives an HTTP 403."
+        explanation: "Not correct. The 202 was already sent."
+    correct_option: c
+    explanation: "Correct. It impersonates the Trigger's ServiceAccount for the creation."
+
+  - id: ats127-030-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the run of one event"
+    source_readings:
+      - sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+    prompt: "How do you find the PipelineRun that one specific event created?"
+    options:
+      - id: a
+        text: "Take the newest run by time."
+        explanation: "Not correct. Several events can arrive at the same time."
+      - id: b
+        text: "Compare the random suffix of the run name."
+        explanation: "Not correct. The suffix has no link to the event ID."
+      - id: c
+        text: "Filter by the label triggers.tekton.dev/eventlistener."
+        explanation: "Not correct. That label matches all events of the EventListener."
+      - id: d
+        text: "Filter by the label triggers.tekton.dev/triggers-eventid with the eventID from the response."
+        explanation: "Correct. Every object the EventListener creates carries this label."
+    correct_option: d
+    explanation: "Correct. Every object the EventListener creates carries this label."
+
+  - id: ats127-030-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Locate where an event stopped"
+    source_readings:
+      - sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+    prompt: "An event returns 202 and creates no run. The core interceptors' log has no answer for it. What do you check first?"
+    options:
+      - id: a
+        text: "Whether the EventListener's labelSelector matches the labels of the Triggers."
+        explanation: "Correct. With no Trigger selected, no interceptor runs."
+      - id: b
+        text: "The webhook Secret key name."
+        explanation: "Not correct. A wrong key would show an interceptor answer in the log."
+      - id: c
+        text: "The path in the TriggerBinding."
+        explanation: "Not correct. Interceptors run before the binding, so they would have answered."
+      - id: d
+        text: "The create permission on pipelineruns."
+        explanation: "Not correct. Interceptors run before the run is created, so they would have answered."
+    correct_option: a
+    explanation: "Correct. With no Trigger selected, no interceptor runs."

@@ -1,0 +1,245 @@
+# Knowledge check for section-010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats127-010
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Triggers Architecture And RBAC"
+placement:
+  position: after
+  reading: sections/section-010/capstone/labs/lab-01/question.md
+questions:
+  - id: ats127-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the object that receives events"
+    source_readings:
+      - sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+    prompt: "Which Tekton Triggers object runs the HTTP server that receives webhook requests?"
+    options:
+      - id: a
+        text: "The TriggerBinding."
+        explanation: "Not correct. A TriggerBinding only lists parameters whose values come from the event."
+      - id: b
+        text: "The EventListener."
+        explanation: "Correct. The Triggers controller creates a Deployment and a Service named el-<name> for it."
+      - id: c
+        text: "The TriggerTemplate."
+        explanation: "Not correct. A TriggerTemplate lists the objects to create, such as a PipelineRun."
+      - id: d
+        text: "The ClusterInterceptor."
+        explanation: "Not correct. It names the Service of an interceptor and does not receive webhooks."
+    correct_option: b
+    explanation: "Correct. The Triggers controller creates a Deployment and a Service named el-<name> for it."
+
+  - id: ats127-010-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know where Triggers is installed"
+    source_readings:
+      - sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+    prompt: "In which namespace do the Tekton Triggers controller, webhook and core interceptors run?"
+    options:
+      - id: a
+        text: "tekton-triggers."
+        explanation: "Not correct. No namespace with this name exists."
+      - id: b
+        text: "kube-system."
+        explanation: "Not correct. Triggers does not install into kube-system."
+      - id: c
+        text: "The namespace of the first EventListener."
+        explanation: "Not correct. The release installs to a fixed namespace, not to one that you choose."
+      - id: d
+        text: "tekton-pipelines."
+        explanation: "Correct. Triggers has no namespace of its own and installs into tekton-pipelines."
+    correct_option: d
+    explanation: "Correct. Triggers has no namespace of its own and installs into tekton-pipelines."
+
+  - id: ats127-010-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know the files of a Triggers release"
+    source_readings:
+      - sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+    prompt: "Which two manifests does a Tekton Triggers release provide for installation?"
+    options:
+      - id: a
+        text: "release.yaml and interceptors.yaml."
+        explanation: "Correct. The first holds the CRDs, controller and webhook. The second holds the core interceptors and ClusterInterceptors."
+      - id: b
+        text: "controller.yaml and webhook.yaml."
+        explanation: "Not correct. Those are parts of release.yaml, not separate files."
+      - id: c
+        text: "crds.yaml and rbac.yaml."
+        explanation: "Not correct. The CRDs are inside release.yaml. The RBAC roles come with it."
+      - id: d
+        text: "triggers.yaml and pipelines.yaml."
+        explanation: "Not correct. Pipelines has its own release and is installed first."
+    correct_option: a
+    explanation: "Correct. The first holds the CRDs, controller and webhook. The second holds the core interceptors and ClusterInterceptors."
+
+  - id: ats127-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell cluster-scoped objects apart"
+    source_readings:
+      - sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+    prompt: "Which two Triggers objects are cluster-scoped?"
+    options:
+      - id: a
+        text: "TriggerBinding and TriggerTemplate."
+        explanation: "Not correct. Both are namespaced."
+      - id: b
+        text: "EventListener and Trigger."
+        explanation: "Not correct. Both are namespaced."
+      - id: c
+        text: "ClusterTriggerBinding and ClusterInterceptor."
+        explanation: "Correct. Every other Triggers object lives in a namespace."
+      - id: d
+        text: "TriggerTemplate and ClusterInterceptor."
+        explanation: "Not correct. TriggerTemplate is namespaced."
+    correct_option: c
+    explanation: "Correct. Every other Triggers object lives in a namespace."
+
+  - id: ats127-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Diagnose an EventListener that is not ready"
+    source_readings:
+      - sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+    prompt: "An EventListener pod stays at 0/1 ready. Its log says the ServiceAccount is forbidden to list resources in the API group triggers.tekton.dev. What fixes it with the least rights?"
+    options:
+      - id: a
+        text: "Bind cluster-admin to the ServiceAccount."
+        explanation: "Not correct. It works but gives far more rights than the EventListener needs."
+      - id: b
+        text: "Delete the Service el-<name>."
+        explanation: "Not correct. The failure is in the API permissions, not in the Service."
+      - id: c
+        text: "Bind the two ClusterRoles from the Triggers release to the EventListener's ServiceAccount."
+        explanation: "Correct. The pod needs them to fill its caches and to create runs."
+      - id: d
+        text: "Create the TriggerTemplate first."
+        explanation: "Not correct. Missing objects do not stop the pod from becoming ready. Missing rights do."
+    correct_option: c
+    explanation: "Correct. The pod needs them to fill its caches and to create runs."
+
+  - id: ats127-010-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Bind the two EventListener roles"
+    source_readings:
+      - sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+    prompt: "How do you bind the two ClusterRoles that the Triggers release ships for an EventListener?"
+    options:
+      - id: a
+        text: "A RoleBinding to tekton-triggers-eventlistener-roles in the EventListener's namespace, and a ClusterRoleBinding to tekton-triggers-eventlistener-clusterroles."
+        explanation: "Correct. The second role reads ClusterTriggerBindings, ClusterInterceptors and Secrets, which are cluster-wide."
+      - id: b
+        text: "A ClusterRoleBinding to tekton-triggers-eventlistener-roles only."
+        explanation: "Not correct. The cluster-scoped objects need the second role too."
+      - id: c
+        text: "Two RoleBindings, one for each ClusterRole."
+        explanation: "Not correct. A RoleBinding cannot grant access to cluster-scoped objects."
+      - id: d
+        text: "No binding. The EventListener gets both roles when it is created."
+        explanation: "Not correct. The roles exist but nothing uses them until you bind them."
+    correct_option: a
+    explanation: "Correct. The second role reads ClusterTriggerBindings, ClusterInterceptors and Secrets, which are cluster-wide."
+
+  - id: ats127-010-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an HTTP 202 correctly"
+    source_readings:
+      - sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+    prompt: "You send an empty JSON object to an EventListener and get HTTP 202. No PipelineRun appears. What does the 202 mean?"
+    options:
+      - id: a
+        text: "The interceptors passed the event."
+        explanation: "Not correct. The answer is sent before the interceptors run."
+      - id: b
+        text: "The TriggerTemplate created a PipelineRun."
+        explanation: "Not correct. If a run had been created, it would show in kubectl get pipelineruns."
+      - id: c
+        text: "The binding resolved all parameters."
+        explanation: "Not correct. Binding errors happen after the 202 and appear only in the log."
+      - id: d
+        text: "The EventListener received the request and selected its Triggers. It processes them afterwards."
+        explanation: "Correct. A 202 means received, never run created. Only the log shows a failure."
+    correct_option: d
+    explanation: "Correct. A 202 means received, never run created. Only the log shows a failure."
+
+  - id: ats127-010-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know how bindings fill templates"
+    source_readings:
+      - sections/section-010/module-01/course-03-bindings-templates-and-tt-params.md
+    prompt: "How does the EventListener match a TriggerBinding parameter to a TriggerTemplate parameter?"
+    options:
+      - id: a
+        text: "By the position in the list."
+        explanation: "Not correct. The order of the parameters does not matter."
+      - id: b
+        text: "By the parameter name."
+        explanation: "Correct. A binding parameter fills only the template parameter with the same name."
+      - id: c
+        text: "By the order of the resourcetemplates."
+        explanation: "Not correct. The resource templates only use the values."
+      - id: d
+        text: "By the name of the Trigger."
+        explanation: "Not correct. The Trigger name does not take part in the match."
+    correct_option: b
+    explanation: "Correct. A binding parameter fills only the template parameter with the same name."
+
+  - id: ats127-010-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Write template parameter references"
+    source_readings:
+      - sections/section-010/module-01/course-03-bindings-templates-and-tt-params.md
+    prompt: "Which expression inside a resourcetemplate of a TriggerTemplate inserts the value of the template parameter revision?"
+    options:
+      - id: a
+        text: "$(tt.params.revision)"
+        explanation: "Correct. The tt. prefix separates it from the Pipeline's own parameters."
+      - id: b
+        text: "$(params.revision)"
+        explanation: "Not correct. That reads a parameter of the Pipeline or Task itself."
+      - id: c
+        text: "$(body.revision)"
+        explanation: "Not correct. That reads a field of the event body in a binding."
+      - id: d
+        text: "$(extensions.revision)"
+        explanation: "Not correct. That reads a value added by an interceptor."
+    correct_option: a
+    explanation: "Correct. The tt. prefix separates it from the Pipeline's own parameters."
+
+  - id: ats127-010-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Predict what a missing field does"
+    source_readings:
+      - sections/section-010/module-01/course-03-bindings-templates-and-tt-params.md
+    prompt: "A TriggerBinding reads $(body.head_commit.id). The event has no head_commit, and the template parameter has no default. What does the EventListener do?"
+    options:
+      - id: a
+        text: "It creates a run with an empty revision."
+        explanation: "Not correct. No run is created when a path is missing and there is no default."
+      - id: b
+        text: "It answers HTTP 400 to the sender."
+        explanation: "Not correct. The 202 is sent before the parameters are resolved."
+      - id: c
+        text: "It uses the value of the nearest field, after."
+        explanation: "Not correct. The EventListener does not guess other fields."
+      - id: d
+        text: "It logs failed to replace JSONPath value for param and creates no run."
+        explanation: "Correct. The response is still 202, so only the log shows the error."
+    correct_option: d
+    explanation: "Correct. The response is still 202, so only the log shows the error."

@@ -132,6 +132,10 @@ modules:
             url: https://tekton.dev/docs/triggers/triggerbindings/
           - name: "Troubleshooting Triggers"
             url: https://tekton.dev/docs/triggers/troubleshooting/
+      - type: quiz
+        title: "Knowledge Check: Triggers Architecture And RBAC"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
   - id: module-020
     title: "Verify And Filter Events With Interceptors"
@@ -206,6 +210,10 @@ modules:
             url: https://tekton.dev/docs/triggers/cel_expressions/
           - name: "TriggerBindings"
             url: https://tekton.dev/docs/triggers/triggerbindings/
+      - type: quiz
+        title: "Knowledge Check: Verify And Filter Events With Interceptors"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
   - id: module-030
     title: "Event-Driven CI End To End"
@@ -280,3 +288,11 @@ modules:
             url: https://tekton.dev/docs/triggers/triggers/
           - name: "Troubleshooting Triggers"
             url: https://tekton.dev/docs/triggers/troubleshooting/
+      - type: quiz
+        title: "Knowledge Check: Event-Driven CI End To End"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Domain Quiz"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

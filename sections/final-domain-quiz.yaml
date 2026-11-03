@@ -1,0 +1,219 @@
+# Final domain knowledge check across all three sections.
+schema_version: 1
+kind: question_bank
+id: ats127-final
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: domain
+  id: triggers-interceptors-event-driven-ci
+  title: "Triggers, Interceptors & Event-Driven CI"
+questions:
+  - id: ats127-final-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the object that receives events"
+    source_readings:
+      - sections/section-010/module-01/course-01-install-triggers-and-its-resources.md
+    prompt: "Which Tekton Triggers object runs the HTTP server that receives webhook requests?"
+    options:
+      - id: a
+        text: "The TriggerBinding."
+        explanation: "Not correct. A TriggerBinding only lists parameters whose values come from the event."
+      - id: b
+        text: "The EventListener."
+        explanation: "Correct. The Triggers controller creates a Deployment and a Service named el-<name> for it."
+      - id: c
+        text: "The TriggerTemplate."
+        explanation: "Not correct. A TriggerTemplate lists the objects to create, such as a PipelineRun."
+      - id: d
+        text: "The ClusterInterceptor."
+        explanation: "Not correct. It names the Service of an interceptor and does not receive webhooks."
+    correct_option: b
+    explanation: "Correct. The Triggers controller creates a Deployment and a Service named el-<name> for it."
+
+  - id: ats127-final-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Diagnose an EventListener that is not ready"
+    source_readings:
+      - sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+    prompt: "An EventListener pod stays at 0/1 ready. Its log says the ServiceAccount is forbidden to list resources in the API group triggers.tekton.dev. What fixes it with the least rights?"
+    options:
+      - id: a
+        text: "Bind cluster-admin to the ServiceAccount."
+        explanation: "Not correct. It works but gives far more rights than the EventListener needs."
+      - id: b
+        text: "Delete the Service el-<name>."
+        explanation: "Not correct. The failure is in the API permissions, not in the Service."
+      - id: c
+        text: "Bind the two ClusterRoles from the Triggers release to the EventListener's ServiceAccount."
+        explanation: "Correct. The pod needs them to fill its caches and to create runs."
+      - id: d
+        text: "Create the TriggerTemplate first."
+        explanation: "Not correct. Missing objects do not stop the pod from becoming ready. Missing rights do."
+    correct_option: c
+    explanation: "Correct. The pod needs them to fill its caches and to create runs."
+
+  - id: ats127-final-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an HTTP 202 correctly"
+    source_readings:
+      - sections/section-010/module-01/course-02-eventlistener-serviceaccount-and-rbac.md
+    prompt: "You send an empty JSON object to an EventListener and get HTTP 202. No PipelineRun appears. What does the 202 mean?"
+    options:
+      - id: a
+        text: "The interceptors passed the event."
+        explanation: "Not correct. The answer is sent before the interceptors run."
+      - id: b
+        text: "The TriggerTemplate created a PipelineRun."
+        explanation: "Not correct. If a run had been created, it would show in kubectl get pipelineruns."
+      - id: c
+        text: "The binding resolved all parameters."
+        explanation: "Not correct. Binding errors happen after the 202 and appear only in the log."
+      - id: d
+        text: "The EventListener received the request and selected its Triggers. It processes them afterwards."
+        explanation: "Correct. A 202 means received, never run created. Only the log shows a failure."
+    correct_option: d
+    explanation: "Correct. A 202 means received, never run created. Only the log shows a failure."
+
+  - id: ats127-final-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe how interceptors pass data on"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-interceptors-work.md
+    prompt: "How does an interceptor give data to the next interceptor and to the binding?"
+    options:
+      - id: a
+        text: "It adds it under the top-level field extensions, which a binding reads as $(extensions.<key>)."
+        explanation: "Correct. The body stays as it was sent."
+      - id: b
+        text: "It rewrites the fields of the body."
+        explanation: "Not correct. Interceptors do not change the body."
+      - id: c
+        text: "It adds new request headers."
+        explanation: "Not correct. Headers are not used to pass this data."
+      - id: d
+        text: "It stores the data in a ConfigMap."
+        explanation: "Not correct. The data travels inside the request chain."
+    correct_option: a
+    explanation: "Correct. The body stays as it was sent."
+
+  - id: ats127-final-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what an HMAC signature proves"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "What does the signature in X-Hub-Signature-256 prove?"
+    options:
+      - id: a
+        text: "The body is encrypted on the way."
+        explanation: "Not correct. Anyone on the path can still read the body."
+      - id: b
+        text: "The request came from an IP address of GitHub."
+        explanation: "Not correct. The signature says nothing about IP addresses."
+      - id: c
+        text: "The event type is push."
+        explanation: "Not correct. The event type is in X-GitHub-Event and is not signed."
+      - id: d
+        text: "The sender knew the secret and the body was not changed. It does not hide the body."
+        explanation: "Correct. The receiver computes the same HMAC and compares."
+    correct_option: d
+    explanation: "Correct. The receiver computes the same HMAC and compares."
+
+  - id: ats127-final-q06
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain a failed signature check"
+    source_readings:
+      - sections/section-020/module-01/course-02-verify-github-webhooks.md
+    prompt: "You sign a payload file with openssl and send it with curl -d. The signature check fails. Why?"
+    options:
+      - id: a
+        text: "openssl cannot compute SHA-256."
+        explanation: "Not correct. openssl dgst -sha256 -hmac computes the signature."
+      - id: b
+        text: "The Secret must be base64 encoded in the header."
+        explanation: "Not correct. The header holds the hex digest."
+      - id: c
+        text: "curl -d changes the body, for example by removing line breaks, so the signed bytes and the sent bytes differ."
+        explanation: "Correct. Use --data-binary so the file is sent unchanged."
+      - id: d
+        text: "The signature header must be sent twice."
+        explanation: "Not correct. One X-Hub-Signature-256 header is enough."
+    correct_option: c
+    explanation: "Correct. Use --data-binary so the file is sent unchanged."
+
+  - id: ats127-final-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Clean up runs of one Trigger"
+    source_readings:
+      - sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+    prompt: "Which command keeps the newest run of the Trigger github-push and deletes its older runs only?"
+    options:
+      - id: a
+        text: "tkn pipelinerun delete -n starfleet --all -f"
+        explanation: "Not correct. It deletes every run in the namespace."
+      - id: b
+        text: "tkn pipelinerun delete -n starfleet --keep 1 -f"
+        explanation: "Not correct. Without a label, --keep counts all runs in the namespace."
+      - id: c
+        text: "tkn pipelinerun delete -n starfleet --label triggers.tekton.dev/trigger=github-push --keep 1 -f"
+        explanation: "Correct. --label limits the work to runs of that Trigger."
+      - id: d
+        text: "kubectl delete eventlistener starfleet-ci"
+        explanation: "Not correct. That removes the EventListener, not the old runs."
+    correct_option: c
+    explanation: "Correct. --label limits the work to runs of that Trigger."
+
+  - id: ats127-final-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Trace a closed pull request"
+    source_readings:
+      - sections/section-030/module-01/course-02-one-eventlistener-several-triggers.md
+    prompt: "A signed pull_request event with action closed goes to an EventListener with a push Trigger and a pull request Trigger. What stops it in the pull request Trigger?"
+    options:
+      - id: a
+        text: "Its signature check."
+        explanation: "Not correct. The signature is valid, so that interceptor continues."
+      - id: b
+        text: "Its CEL filter, because the action is not opened, synchronize or reopened."
+        explanation: "Correct. The github interceptor of that Trigger lets it through first."
+      - id: c
+        text: "The label selector of the EventListener."
+        explanation: "Not correct. The Trigger has the label and is selected."
+      - id: d
+        text: "Its TriggerTemplate."
+        explanation: "Not correct. A template cannot reject events."
+    correct_option: b
+    explanation: "Correct. The github interceptor of that Trigger lets it through first."
+
+  - id: ats127-final-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Locate where an event stopped"
+    source_readings:
+      - sections/section-030/module-01/course-03-trace-and-clean-up-runs.md
+    prompt: "An event returns 202 and creates no run. The core interceptors' log has no answer for it. What do you check first?"
+    options:
+      - id: a
+        text: "Whether the EventListener's labelSelector matches the labels of the Triggers."
+        explanation: "Correct. With no Trigger selected, no interceptor runs."
+      - id: b
+        text: "The webhook Secret key name."
+        explanation: "Not correct. A wrong key would show an interceptor answer in the log."
+      - id: c
+        text: "The path in the TriggerBinding."
+        explanation: "Not correct. Interceptors run before the binding, so they would have answered."
+      - id: d
+        text: "The create permission on pipelineruns."
+        explanation: "Not correct. Interceptors run before the run is created, so they would have answered."
+    correct_option: a
+    explanation: "Correct. With no Trigger selected, no interceptor runs."

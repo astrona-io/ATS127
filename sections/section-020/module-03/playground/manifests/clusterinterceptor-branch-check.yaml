@@ -1,0 +1,12 @@
+# Registers the service branch-check as a ClusterInterceptor. Without a
+# caBundle the EventListener calls the service over plain HTTP.
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: ClusterInterceptor
+metadata:
+  name: branch-check
+spec:
+  clientConfig:
+    service:
+      name: branch-check
+      namespace: starfleet
+      port: 80

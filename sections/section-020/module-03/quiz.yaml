@@ -1,0 +1,246 @@
+# Knowledge check for module 03 of section-020. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-020-m03
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-020-03
+  title: "Write A Custom ClusterInterceptor"
+placement:
+  position: after
+  reading: sections/section-020/module-03/course-05-summary.md
+questions:
+  - id: ats127-020-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe the contract"
+    source_readings:
+      - sections/section-020/module-03/course-01-the-interceptor-contract.md
+    prompt: "What does an EventListener send to a custom interceptor?"
+    options:
+      - id: a
+        text: "An HTTP POST with a JSON request holding body, header, extensions, interceptor_params and context."
+        explanation: "Correct. The service answers with JSON."
+      - id: b
+        text: "A gRPC stream."
+        explanation: "Not correct. The contract is plain HTTP and JSON."
+      - id: c
+        text: "A copy of the PipelineRun."
+        explanation: "Not correct. No run exists yet."
+      - id: d
+        text: "Only the commit ID."
+        explanation: "Not correct. The whole request is sent."
+    correct_option: a
+    explanation: "Correct. The service answers with JSON."
+
+  - id: ats127-020-m03-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Parse the body"
+    source_readings:
+      - sections/section-020/module-03/course-01-the-interceptor-contract.md
+    prompt: "In the request, what type is body?"
+    options:
+      - id: a
+        text: "A parsed JSON object."
+        explanation: "Not correct. It is a string."
+      - id: b
+        text: "A list of headers."
+        explanation: "Not correct. Headers are separate."
+      - id: c
+        text: "A file path."
+        explanation: "Not correct. It is the content."
+      - id: d
+        text: "A string that the service must parse as JSON."
+        explanation: "Correct. The request carries the original body as text."
+    correct_option: d
+    explanation: "Correct. The request carries the original body as text."
+
+  - id: ats127-020-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Stop an event"
+    source_readings:
+      - sections/section-020/module-03/course-01-the-interceptor-contract.md
+    prompt: "How does a custom interceptor stop an event?"
+    options:
+      - id: a
+        text: "It answers with HTTP 403."
+        explanation: "Not correct. A transport error is not the contract."
+      - id: b
+        text: "It closes the connection."
+        explanation: "Not correct. That is treated as a failure."
+      - id: c
+        text: "It answers 200 with continue set to false and a status."
+        explanation: "Correct. An HTTP error is a failure of the interceptor."
+      - id: d
+        text: "It deletes the Trigger."
+        explanation: "Not correct. It cannot."
+    correct_option: c
+    explanation: "Correct. An HTTP error is a failure of the interceptor."
+
+  - id: ats127-020-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Return extensions"
+    source_readings:
+      - sections/section-020/module-03/course-01-the-interceptor-contract.md
+    prompt: "What does a service return to give a binding the value short_branch?"
+    options:
+      - id: a
+        text: "A header named short_branch."
+        explanation: "Not correct. Headers are not read this way."
+      - id: b
+        text: "An extensions object with the key short_branch, read as $(extensions.short_branch)."
+        explanation: "Correct. Extensions are merged into the chain."
+      - id: c
+        text: "A new body."
+        explanation: "Not correct. Interceptors do not change the body."
+      - id: d
+        text: "A ConfigMap entry."
+        explanation: "Not correct. The data travels in the response."
+    correct_option: b
+    explanation: "Correct. Extensions are merged into the chain."
+
+  - id: ats127-020-m03-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Run the service"
+    source_readings:
+      - sections/section-020/module-03/course-02-deploy-the-interceptor-service.md
+    prompt: "How is the lab service made reachable by the EventListener?"
+    options:
+      - id: a
+        text: "As a Deployment behind a Service."
+        explanation: "Correct. The ClusterInterceptor names that Service."
+      - id: b
+        text: "As a CronJob."
+        explanation: "Not correct. It must run all the time."
+      - id: c
+        text: "As a Job per event."
+        explanation: "Not correct. The listener calls a fixed address."
+      - id: d
+        text: "Inside the EventListener pod."
+        explanation: "Not correct. It is a separate service."
+    correct_option: a
+    explanation: "Correct. The ClusterInterceptor names that Service."
+
+  - id: ats127-020-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Register the interceptor"
+    source_readings:
+      - sections/section-020/module-03/course-03-register-a-clusterinterceptor-and-use-it.md
+    prompt: "Which field of the ClusterInterceptor points at the service?"
+    options:
+      - id: a
+        text: "spec.ref"
+        explanation: "Not correct. A Trigger uses ref, not the ClusterInterceptor."
+      - id: b
+        text: "spec.url"
+        explanation: "Not correct. The object names a Service."
+      - id: c
+        text: "metadata.service"
+        explanation: "Not correct. Metadata has no such field."
+      - id: d
+        text: "spec.clientConfig.service, with name, namespace and port."
+        explanation: "Correct. A caBundle there turns on HTTPS."
+    correct_option: d
+    explanation: "Correct. A caBundle there turns on HTTPS."
+
+  - id: ats127-020-m03-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the interceptor in a Trigger"
+    source_readings:
+      - sections/section-020/module-03/course-03-register-a-clusterinterceptor-and-use-it.md
+    prompt: "How does a Trigger call a ClusterInterceptor named branch-check?"
+    options:
+      - id: a
+        text: "With a webhook URL in the binding."
+        explanation: "Not correct. Bindings do not call services."
+      - id: b
+        text: "With a Secret reference."
+        explanation: "Not correct. A secret is not a reference to a service."
+      - id: c
+        text: "With an interceptor entry whose ref name is branch-check."
+        explanation: "Correct. The same way as github or cel."
+      - id: d
+        text: "It must be set on the EventListener only."
+        explanation: "Not correct. It is set on the Trigger."
+    correct_option: c
+    explanation: "Correct. The same way as github or cel."
+
+  - id: ats127-020-m03-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Find the fault by layer"
+    source_readings:
+      - sections/section-020/module-03/course-03-register-a-clusterinterceptor-and-use-it.md
+    prompt: "The log of the interceptor service has no request lines. What does that point to?"
+    options:
+      - id: a
+        text: "A bug in the service code."
+        explanation: "Not correct. The code never ran."
+      - id: b
+        text: "Nothing reaches it: check the Service name and port in the ClusterInterceptor, and the endpoints."
+        explanation: "Correct. The fault is before the service."
+      - id: c
+        text: "A wrong binding path."
+        explanation: "Not correct. The binding runs after the interceptor."
+      - id: d
+        text: "A missing Pipeline."
+        explanation: "Not correct. That is later."
+    correct_option: b
+    explanation: "Correct. The fault is before the service."
+
+  - id: ats127-020-m03-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Enable HTTPS"
+    source_readings:
+      - sections/section-020/module-03/course-04-secure-and-troubleshoot-a-custom-interceptor.md
+    prompt: "How do you make the EventListener call the interceptor over HTTPS?"
+    options:
+      - id: a
+        text: "Serve a certificate and set the caBundle in the ClusterInterceptor."
+        explanation: "Correct. The listener checks the certificate against the bundle."
+      - id: b
+        text: "Use port 443 in the Trigger."
+        explanation: "Not correct. The port is in the ClusterInterceptor."
+      - id: c
+        text: "Add a header to the binding."
+        explanation: "Not correct. Bindings do not choose transport."
+      - id: d
+        text: "It is always HTTPS."
+        explanation: "Not correct. Without a caBundle it is plain HTTP."
+    correct_option: a
+    explanation: "Correct. The listener checks the certificate against the bundle."
+
+  - id: ats127-020-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Fail closed"
+    source_readings:
+      - sections/section-020/module-03/course-04-secure-and-troubleshoot-a-custom-interceptor.md
+    prompt: "The interceptor service is down. What should happen to events, and why?"
+    options:
+      - id: a
+        text: "They continue, so builds are not delayed."
+        explanation: "Not correct. That fails open."
+      - id: b
+        text: "They queue forever."
+        explanation: "Not correct. The listener does not queue."
+      - id: c
+        text: "They go to the next Trigger unchecked."
+        explanation: "Not correct. Each Trigger decides for itself."
+      - id: d
+        text: "They are dropped, so no build starts without the check."
+        explanation: "Correct. No answer must never mean continue."
+    correct_option: d
+    explanation: "Correct. No answer must never mean continue."
+

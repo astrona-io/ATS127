@@ -1,0 +1,31 @@
+# The TriggerTemplate docs-check-run. It creates one PipelineRun of docs-check
+# per event and takes the same three parameters as ci-build-run, so the same
+# TriggerBinding github-push can feed it.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: docs-check-run
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      description: The clone URL of the repository
+    - name: revision
+      description: The commit ID to check
+    - name: branch
+      description: The branch that was pushed
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: docs-check-run-
+      spec:
+        pipelineRef:
+          name: docs-check
+        params:
+          - name: repo-url
+            value: $(tt.params.repo-url)
+          - name: revision
+            value: $(tt.params.revision)
+          - name: branch
+            value: $(tt.params.branch)

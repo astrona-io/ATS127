@@ -1,0 +1,19 @@
+# The faulty binding of the lab: the path for revision does not exist in a
+# GitHub push event (the commit is under head_commit, not head).
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-push
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head.id)
+    - name: branch
+      value: $(body.ref)
+    - name: pusher
+      value: $(body.pusher.name)
+    - name: event
+      value: $(header.X-GitHub-Event)

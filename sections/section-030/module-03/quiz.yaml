@@ -1,0 +1,246 @@
+# Knowledge check for module 03 of section-030. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-030-m03
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-030-03
+  title: "Path-Filtered And Multi-Pipeline Triggers"
+placement:
+  position: after
+  reading: sections/section-030/module-03/course-05-summary.md
+questions:
+  - id: ats127-030-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the file lists"
+    source_readings:
+      - sections/section-030/module-03/course-01-which-files-did-a-push-change.md
+    prompt: "Where does a GitHub push payload list the files of a commit?"
+    options:
+      - id: a
+        text: "In commits, with the lists added, modified and removed per commit."
+        explanation: "Correct. Paths are relative to the repository root."
+      - id: b
+        text: "In repository.files."
+        explanation: "Not correct. The repository object has no file list."
+      - id: c
+        text: "In the request headers."
+        explanation: "Not correct. Headers have no paths."
+      - id: d
+        text: "In pusher."
+        explanation: "Not correct. That holds the pusher."
+    correct_option: a
+    explanation: "Correct. Paths are relative to the repository root."
+
+  - id: ats127-030-m03-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Handle a rename"
+    source_readings:
+      - sections/section-030/module-03/course-01-which-files-did-a-push-change.md
+    prompt: "How does a renamed file appear in the lists?"
+    options:
+      - id: a
+        text: "As one modified path."
+        explanation: "Not correct. The old path would be missing."
+      - id: b
+        text: "In a list named renamed."
+        explanation: "Not correct. No such list is documented."
+      - id: c
+        text: "It does not appear."
+        explanation: "Not correct. It appears as above."
+      - id: d
+        text: "As one removed path and one added path."
+        explanation: "Correct. There is no renamed list."
+    correct_option: d
+    explanation: "Correct. There is no renamed list."
+
+  - id: ats127-030-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the missing field"
+    source_readings:
+      - sections/section-030/module-03/course-01-which-files-did-a-push-change.md
+    prompt: "The payload push-main.json has no commits. What does a filter on body.commits do?"
+    options:
+      - id: a
+        text: "It returns true."
+        explanation: "Not correct. Nothing can be read."
+      - id: b
+        text: "It reads head_commit instead."
+        explanation: "Not correct. CEL does not fall back."
+      - id: c
+        text: "The expression fails and the interceptor stops the event."
+        explanation: "Correct. The field is absent."
+      - id: d
+        text: "It creates a run with empty parameters."
+        explanation: "Not correct. The event is stopped."
+    correct_option: c
+    explanation: "Correct. The field is absent."
+
+  - id: ats127-030-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write a path test"
+    source_readings:
+      - sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+    prompt: "Which CEL expression is true when a commit modified a file under docs/?"
+    options:
+      - id: a
+        text: "body.commits.modified.startsWith('docs/')"
+        explanation: "Not correct. commits is a list, not an object."
+      - id: b
+        text: "body.commits.exists(c, c.modified.exists(f, f.startsWith('docs/')))"
+        explanation: "Correct. exists tests each commit and each path."
+      - id: c
+        text: "body.modified == 'docs/'"
+        explanation: "Not correct. modified is a list of paths."
+      - id: d
+        text: "body.head_commit.docs"
+        explanation: "Not correct. No such field."
+    correct_option: b
+    explanation: "Correct. exists tests each commit and each path."
+
+  - id: ats127-030-m03-q05
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Use the trailing slash"
+    source_readings:
+      - sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+    prompt: "Why write startsWith('docs/') and not startsWith('docs')?"
+    options:
+      - id: a
+        text: "The shorter prefix also matches docs-old.txt and docs2/."
+        explanation: "Correct. The slash limits it to the directory."
+      - id: b
+        text: "The slash is required by CEL."
+        explanation: "Not correct. Both are valid CEL."
+      - id: c
+        text: "The shorter one is slower."
+        explanation: "Not correct. Speed is not the reason."
+      - id: d
+        text: "The shorter one only matches the file docs."
+        explanation: "Not correct. It matches more."
+    correct_option: a
+    explanation: "Correct. The slash limits it to the directory."
+
+  - id: ats127-030-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Cover new files"
+    source_readings:
+      - sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+    prompt: "A new file docs/new.md is pushed. Which list contains it?"
+    options:
+      - id: a
+        text: "modified"
+        explanation: "Not correct. Only changed files are there."
+      - id: b
+        text: "removed"
+        explanation: "Not correct. That is for deleted files."
+      - id: c
+        text: "head_commit"
+        explanation: "Not correct. That is a commit object."
+      - id: d
+        text: "added"
+        explanation: "Correct. A filter on modified alone would miss it."
+    correct_option: d
+    explanation: "Correct. A filter on modified alone would miss it."
+
+  - id: ats127-030-m03-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Make a Trigger run"
+    source_readings:
+      - sections/section-030/module-03/course-03-fan-out-to-several-pipelines.md
+    prompt: "A new Trigger exists in the namespace but never runs. The EventListener uses labelSelector team=starfleet. What is missing?"
+    options:
+      - id: a
+        text: "A second EventListener."
+        explanation: "Not correct. One is enough."
+      - id: b
+        text: "A new Secret."
+        explanation: "Not correct. Secrets are about interceptors."
+      - id: c
+        text: "The label team: starfleet on the Trigger."
+        explanation: "Correct. Without it the listener does not select it."
+      - id: d
+        text: "A larger replica count."
+        explanation: "Not correct. Replicas do not select Triggers."
+    correct_option: c
+    explanation: "Correct. Without it the listener does not select it."
+
+  - id: ats127-030-m03-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Follow a fan-out"
+    source_readings:
+      - sections/section-030/module-03/course-03-fan-out-to-several-pipelines.md
+    prompt: "One push starts ci-build and docs-check. What do the two runs share and what differs?"
+    options:
+      - id: a
+        text: "They share the Trigger label."
+        explanation: "Not correct. Each Trigger sets its own."
+      - id: b
+        text: "They share the event ID label and differ in the label triggers.tekton.dev/trigger."
+        explanation: "Correct. The Trigger label tells them apart."
+      - id: c
+        text: "They share nothing."
+        explanation: "Not correct. The event ID is the same."
+      - id: d
+        text: "They share the run name."
+        explanation: "Not correct. generateName gives different names."
+    correct_option: b
+    explanation: "Correct. The Trigger label tells them apart."
+
+  - id: ats127-030-m03-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Build unless docs only"
+    source_readings:
+      - sections/section-030/module-03/course-04-edge-cases-and-build-unless-docs-only.md
+    prompt: "Which idea makes the build Trigger skip pushes that change only docs/?"
+    options:
+      - id: a
+        text: "Match when any changed path is not under docs/, using a negated startsWith inside exists."
+        explanation: "Correct. Then a docs-only push is false."
+      - id: b
+        text: "Match when every path starts with docs/."
+        explanation: "Not correct. That is the docs-only case."
+      - id: c
+        text: "Remove the cel interceptor."
+        explanation: "Not correct. Then every push builds."
+      - id: d
+        text: "Filter on head_commit.message."
+        explanation: "Not correct. The message says nothing about files."
+    correct_option: a
+    explanation: "Correct. Then a docs-only push is false."
+
+  - id: ats127-030-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Name the limits of path filters"
+    source_readings:
+      - sections/section-030/module-03/course-04-edge-cases-and-build-unless-docs-only.md
+    prompt: "Why should a path filter not be the only security gate?"
+    options:
+      - id: a
+        text: "CEL cannot read lists."
+        explanation: "Not correct. It can."
+      - id: b
+        text: "Paths are encrypted."
+        explanation: "Not correct. They are plain text."
+      - id: c
+        text: "The listener ignores the filter."
+        explanation: "Not correct. It applies it."
+      - id: d
+        text: "A listing limit or a merge commit can hide files from the payload."
+        explanation: "Correct. Test with real events from your provider."
+    correct_option: d
+    explanation: "Correct. Test with real events from your provider."
+

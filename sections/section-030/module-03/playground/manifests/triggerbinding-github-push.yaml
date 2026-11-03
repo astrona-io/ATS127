@@ -1,0 +1,15 @@
+# Reads a GitHub push event. branch comes from the CEL overlay branch_name,
+# so it is the short branch name, for example main.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-push
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head_commit.id)
+    - name: branch
+      value: $(extensions.branch_name)

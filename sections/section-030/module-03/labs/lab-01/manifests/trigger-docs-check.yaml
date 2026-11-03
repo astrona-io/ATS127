@@ -1,0 +1,33 @@
+# The Trigger for documentation changes on main. It should start a docs-check
+# run when a push changes a file under docs/. It reuses the binding github-push.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: docs-check
+  namespace: starfleet
+spec:
+  interceptors:
+    - name: verify-github-push
+      ref:
+        name: github
+      params:
+        - name: secretRef
+          value:
+            secretName: github-webhook-secret
+            secretKey: secretToken
+        - name: eventTypes
+          value: ["push"]
+    - name: only-docs-on-main
+      ref:
+        name: cel
+      params:
+        - name: filter
+          value: "body.ref == 'refs/heads/main' && body.commits.exists(c, c.modified.exists(f, f.startsWith('doc/')))"
+        - name: overlays
+          value:
+            - key: branch_name
+              expression: "body.ref.split('/')[2]"
+  bindings:
+    - ref: github-push
+  template:
+    ref: docs-check-run

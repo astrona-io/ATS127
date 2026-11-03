@@ -1,0 +1,15 @@
+# The EventListener the playground starts with. It has no interceptors yet:
+# every JSON request to el-starfleet-ci creates a PipelineRun, whoever sends it.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run

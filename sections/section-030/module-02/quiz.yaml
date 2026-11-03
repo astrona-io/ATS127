@@ -1,0 +1,246 @@
+# Knowledge check for module 02 of section-030. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-030-m02
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-030-02
+  title: "Run Lifecycle: Retention And Cleanup"
+placement:
+  position: after
+  reading: sections/section-030/module-02/course-05-summary.md
+questions:
+  - id: ats127-030-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the owner chain"
+    source_readings:
+      - sections/section-030/module-02/course-01-what-an-event-leaves-behind.md
+    prompt: "Which object in the chain PipelineRun, TaskRun, pod has no owner?"
+    options:
+      - id: a
+        text: "The PipelineRun."
+        explanation: "Correct. Deleting it removes the rest through garbage collection."
+      - id: b
+        text: "The TaskRun."
+        explanation: "Not correct. It is owned by the PipelineRun."
+      - id: c
+        text: "The pod."
+        explanation: "Not correct. It is owned by the TaskRun."
+      - id: d
+        text: "All three have one."
+        explanation: "Not correct. The PipelineRun does not."
+    correct_option: a
+    explanation: "Correct. Deleting it removes the rest through garbage collection."
+
+  - id: ats127-030-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the event labels"
+    source_readings:
+      - sections/section-030/module-02/course-01-what-an-event-leaves-behind.md
+    prompt: "Which label on a run carries the ID of the event that created it?"
+    options:
+      - id: a
+        text: "tekton.dev/pipeline"
+        explanation: "Not correct. That holds the Pipeline name."
+      - id: b
+        text: "team"
+        explanation: "Not correct. That is a label you set on Triggers."
+      - id: c
+        text: "purpose"
+        explanation: "Not correct. That is a label from the lab."
+      - id: d
+        text: "triggers.tekton.dev/triggers-eventid"
+        explanation: "Correct. The EventListener sets it."
+    correct_option: d
+    explanation: "Correct. The EventListener sets it."
+
+  - id: ats127-030-m02-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Delete the right object"
+    source_readings:
+      - sections/section-030/module-02/course-01-what-an-event-leaves-behind.md
+    prompt: "What do you delete to clean up a finished build?"
+    options:
+      - id: a
+        text: "The pods."
+        explanation: "Not correct. The PipelineRun and the TaskRun objects remain."
+      - id: b
+        text: "The TaskRuns only."
+        explanation: "Not correct. The PipelineRun remains."
+      - id: c
+        text: "The PipelineRun."
+        explanation: "Correct. The TaskRuns and pods follow."
+      - id: d
+        text: "The Pipeline."
+        explanation: "Not correct. That removes the definition, not the runs."
+    correct_option: c
+    explanation: "Correct. The TaskRuns and pods follow."
+
+  - id: ats127-030-m02-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Delete by label"
+    source_readings:
+      - sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+    prompt: "Which command deletes runs with the label purpose=old-build?"
+    options:
+      - id: a
+        text: "kubectl delete pipelines -l purpose=old-build"
+        explanation: "Not correct. Pipelines are definitions."
+      - id: b
+        text: "kubectl delete pipelineruns -n starfleet -l purpose=old-build"
+        explanation: "Correct. The selector picks the runs."
+      - id: c
+        text: "kubectl delete pods --all"
+        explanation: "Not correct. That removes every pod."
+      - id: d
+        text: "kubectl get pipelineruns -l purpose=old-build"
+        explanation: "Not correct. get only lists."
+    correct_option: b
+    explanation: "Correct. The selector picks the runs."
+
+  - id: ats127-030-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep the newest runs"
+    source_readings:
+      - sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+    prompt: "Which tool option keeps the newest runs of a Pipeline and deletes the rest?"
+    options:
+      - id: a
+        text: "tkn pipelinerun delete --pipeline <name> --keep <n>"
+        explanation: "Correct. The tool counts runs per Pipeline."
+      - id: b
+        text: "kubectl delete --keep"
+        explanation: "Not correct. kubectl has no such option."
+      - id: c
+        text: "tkn pipeline prune"
+        explanation: "Not correct. That is not the command used here."
+      - id: d
+        text: "kubectl get --keep"
+        explanation: "Not correct. get does not delete."
+    correct_option: a
+    explanation: "Correct. The tool counts runs per Pipeline."
+
+  - id: ats127-030-m02-q06
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "See the limit of count rules"
+    source_readings:
+      - sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+    prompt: "Why can --keep delete a release run you wanted to keep?"
+    options:
+      - id: a
+        text: "It deletes the oldest by name."
+        explanation: "Not correct. It uses creation time."
+      - id: b
+        text: "It ignores the Pipeline."
+        explanation: "Not correct. It selects by Pipeline."
+      - id: c
+        text: "It only deletes failed runs."
+        explanation: "Not correct. It does not look at the result."
+      - id: d
+        text: "It counts runs of one Pipeline and does not know which are releases."
+        explanation: "Correct. Select with a label instead."
+    correct_option: d
+    explanation: "Correct. Select with a label instead."
+
+  - id: ats127-030-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Give the cleanup account minimal rights"
+    source_readings:
+      - sections/section-030/module-02/course-03-automate-cleanup-with-a-cronjob.md
+    prompt: "Which verbs on pipelineruns does the cleanup ServiceAccount need for kubectl delete with a selector?"
+    options:
+      - id: a
+        text: "create and update."
+        explanation: "Not correct. The job creates nothing."
+      - id: b
+        text: "Only delete."
+        explanation: "Not correct. The selector needs list."
+      - id: c
+        text: "get, list and delete."
+        explanation: "Correct. kubectl lists the objects and then deletes them."
+      - id: d
+        text: "All verbs on all resources."
+        explanation: "Not correct. That is far more than needed."
+    correct_option: c
+    explanation: "Correct. kubectl lists the objects and then deletes them."
+
+  - id: ats127-030-m02-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Limit CronJob history"
+    source_readings:
+      - sections/section-030/module-02/course-03-automate-cleanup-with-a-cronjob.md
+    prompt: "Why set successfulJobsHistoryLimit and failedJobsHistoryLimit on the cleanup CronJob?"
+    options:
+      - id: a
+        text: "They make the job run faster."
+        explanation: "Not correct. They do not affect speed."
+      - id: b
+        text: "Otherwise finished Jobs and their pods collect in the namespace."
+        explanation: "Correct. Then the cleanup job needs a cleanup."
+      - id: c
+        text: "They grant the job more rights."
+        explanation: "Not correct. They are not about rights."
+      - id: d
+        text: "They set the schedule."
+        explanation: "Not correct. The schedule is a separate field."
+    correct_option: b
+    explanation: "Correct. Then the cleanup job needs a cleanup."
+
+  - id: ats127-030-m02-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Choose a negative selector"
+    source_readings:
+      - sections/section-030/module-02/course-04-retention-labels-in-the-template.md
+    prompt: "Why is purpose!=release a good keep rule for runs that were created before the label existed?"
+    options:
+      - id: a
+        text: "It also matches runs without a purpose label, so they are cleaned, and releases are kept."
+        explanation: "Correct. A positive selector would never see them."
+      - id: b
+        text: "It matches only releases."
+        explanation: "Not correct. It excludes them."
+      - id: c
+        text: "It matches nothing without the label."
+        explanation: "Not correct. Runs without the label do match."
+      - id: d
+        text: "It deletes releases first."
+        explanation: "Not correct. They are excluded."
+    correct_option: a
+    explanation: "Correct. A positive selector would never see them."
+
+  - id: ats127-030-m02-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Add labels in a template"
+    source_readings:
+      - sections/section-030/module-02/course-04-retention-labels-in-the-template.md
+    prompt: "Where do you set a retention label that every run from a Trigger should carry?"
+    options:
+      - id: a
+        text: "In the EventListener spec."
+        explanation: "Not correct. The listener has no field for it."
+      - id: b
+        text: "In the TriggerBinding."
+        explanation: "Not correct. A binding only lists parameters."
+      - id: c
+        text: "On the Pipeline."
+        explanation: "Not correct. That labels the Pipeline, not the runs."
+      - id: d
+        text: "In the metadata of the PipelineRun in the TriggerTemplate."
+        explanation: "Correct. The EventListener adds its labels next to it."
+    correct_option: d
+    explanation: "Correct. The EventListener adds its labels next to it."
+

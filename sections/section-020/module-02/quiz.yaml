@@ -1,0 +1,246 @@
+# Knowledge check for module 02 of section-020. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-020-m02
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-020-02
+  title: "GitLab And Bitbucket Interceptors"
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-05-summary.md
+questions:
+  - id: ats127-020-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the GitLab headers"
+    source_readings:
+      - sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+    prompt: "Which header carries the secret token of a GitLab webhook?"
+    options:
+      - id: a
+        text: "X-Gitlab-Token"
+        explanation: "Correct. The event name is in X-Gitlab-Event."
+      - id: b
+        text: "X-Hub-Signature-256"
+        explanation: "Not correct. That is the GitHub signature header."
+      - id: c
+        text: "X-Gitlab-Signature"
+        explanation: "Not correct. GitLab sends a plain token."
+      - id: d
+        text: "Authorization"
+        explanation: "Not correct. The token has its own header."
+    correct_option: a
+    explanation: "Correct. The event name is in X-Gitlab-Event."
+
+  - id: ats127-020-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name a GitLab event type"
+    source_readings:
+      - sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+    prompt: "Which value in eventTypes lets a GitLab push through?"
+    options:
+      - id: a
+        text: "push"
+        explanation: "Not correct. That is the GitHub name."
+      - id: b
+        text: "repo:push"
+        explanation: "Not correct. That is the Bitbucket name."
+      - id: c
+        text: "git.push"
+        explanation: "Not correct. No such name exists."
+      - id: d
+        text: "Push Hook"
+        explanation: "Correct. GitLab names events like this in X-Gitlab-Event."
+    correct_option: d
+    explanation: "Correct. GitLab names events like this in X-Gitlab-Event."
+
+  - id: ats127-020-m02-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Compare token and signature"
+    source_readings:
+      - sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+    prompt: "Why is a GitLab token weaker than a GitHub signature?"
+    options:
+      - id: a
+        text: "The token is shorter."
+        explanation: "Not correct. Length is not the point."
+      - id: b
+        text: "The token expires."
+        explanation: "Not correct. It does not expire by itself."
+      - id: c
+        text: "The token is sent as is, so anyone who sees the request can reuse it."
+        explanation: "Correct. A signature covers the body and cannot be reused for another body."
+      - id: d
+        text: "The token is sent in the body."
+        explanation: "Not correct. It is sent in a header."
+    correct_option: c
+    explanation: "Correct. A signature covers the body and cannot be reused for another body."
+
+  - id: ats127-020-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Configure the gitlab interceptor"
+    source_readings:
+      - sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+    prompt: "Which parameters does the gitlab interceptor take for the lab setup?"
+    options:
+      - id: a
+        text: "token and branch."
+        explanation: "Not correct. Those are not parameter names."
+      - id: b
+        text: "secretRef and eventTypes."
+        explanation: "Correct. The secretRef names the Secret and the key."
+      - id: c
+        text: "url and port."
+        explanation: "Not correct. It does not call a URL."
+      - id: d
+        text: "body and header."
+        explanation: "Not correct. Those are CEL variables."
+    correct_option: b
+    explanation: "Correct. The secretRef names the Secret and the key."
+
+  - id: ats127-020-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the Bitbucket limits"
+    source_readings:
+      - sections/section-020/module-02/course-02-bitbucket-server-and-cloud.md
+    prompt: "What does the bitbucket interceptor check for Bitbucket Cloud events?"
+    options:
+      - id: a
+        text: "Only the event type; it has no shared-secret check for Cloud."
+        explanation: "Correct. A secretRef works for Bitbucket Server."
+      - id: b
+        text: "A signature with HMAC."
+        explanation: "Not correct. That applies to a different setup."
+      - id: c
+        text: "The IP address of the sender."
+        explanation: "Not correct. It does not check IPs."
+      - id: d
+        text: "Nothing at all."
+        explanation: "Not correct. It filters by eventTypes."
+    correct_option: a
+    explanation: "Correct. A secretRef works for Bitbucket Server."
+
+  - id: ats127-020-m02-q06
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name a Bitbucket Cloud event type"
+    source_readings:
+      - sections/section-020/module-02/course-02-bitbucket-server-and-cloud.md
+    prompt: "Which eventTypes value matches a push in Bitbucket Cloud?"
+    options:
+      - id: a
+        text: "Push Hook"
+        explanation: "Not correct. That is GitLab."
+      - id: b
+        text: "push"
+        explanation: "Not correct. That is GitHub."
+      - id: c
+        text: "pullrequest"
+        explanation: "Not correct. That is not a push."
+      - id: d
+        text: "repo:push"
+        explanation: "Correct. Cloud events use this form."
+    correct_option: d
+    explanation: "Correct. Cloud events use this form."
+
+  - id: ats127-020-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Order interceptors"
+    source_readings:
+      - sections/section-020/module-02/course-03-normalize-provider-payloads-with-cel.md
+    prompt: "Where must the provider interceptor be in the chain, and why?"
+    options:
+      - id: a
+        text: "Last, so it sees the final extensions."
+        explanation: "Not correct. Then unverified bodies would be read first."
+      - id: b
+        text: "Anywhere; order has no effect."
+        explanation: "Not correct. Order decides what each interceptor sees."
+      - id: c
+        text: "First, so the origin is checked before any CEL expression reads the body."
+        explanation: "Correct. Checks before work."
+      - id: d
+        text: "In the binding."
+        explanation: "Not correct. Bindings cannot hold interceptors."
+    correct_option: c
+    explanation: "Correct. Checks before work."
+
+  - id: ats127-020-m02-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Normalize a branch"
+    source_readings:
+      - sections/section-020/module-02/course-03-normalize-provider-payloads-with-cel.md
+    prompt: "A cel overlay writes the key branch from the provider ref. How does the binding read it?"
+    options:
+      - id: a
+        text: "$(body.branch)"
+        explanation: "Not correct. The body is not changed."
+      - id: b
+        text: "$(extensions.branch)"
+        explanation: "Correct. Overlays are stored under extensions."
+      - id: c
+        text: "$(tt.params.branch)"
+        explanation: "Not correct. That is inside a template."
+      - id: d
+        text: "$(header.branch)"
+        explanation: "Not correct. Overlays do not add headers."
+    correct_option: b
+    explanation: "Correct. Overlays are stored under extensions."
+
+  - id: ats127-020-m02-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Serve several providers"
+    source_readings:
+      - sections/section-020/module-02/course-04-several-providers-one-eventlistener.md
+    prompt: "One EventListener serves GitHub and GitLab. A GitLab event fails its token check. What happens to the GitHub Trigger?"
+    options:
+      - id: a
+        text: "Nothing; a Trigger whose interceptors stop an event skips only itself."
+        explanation: "Correct. Triggers are independent."
+      - id: b
+        text: "It also stops."
+        explanation: "Not correct. Each Trigger runs on its own."
+      - id: c
+        text: "It runs with an empty body."
+        explanation: "Not correct. It does not run for this event."
+      - id: d
+        text: "The EventListener restarts."
+        explanation: "Not correct. No restart happens."
+    correct_option: a
+    explanation: "Correct. Triggers are independent."
+
+  - id: ats127-020-m02-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use one Secret per provider"
+    source_readings:
+      - sections/section-020/module-02/course-04-several-providers-one-eventlistener.md
+    prompt: "Why use a separate Secret for each provider?"
+    options:
+      - id: a
+        text: "Kubernetes allows one key per Secret."
+        explanation: "Not correct. A Secret can hold many keys."
+      - id: b
+        text: "The interceptors cannot read the same Secret."
+        explanation: "Not correct. They can; it is a design choice."
+      - id: c
+        text: "Secrets must be in tekton-pipelines."
+        explanation: "Not correct. They live in the namespace of the Trigger."
+      - id: d
+        text: "A leak or a rotation of one token does not touch the other providers."
+        explanation: "Correct. Secrets are named in each interceptor."
+    correct_option: d
+    explanation: "Correct. Secrets are named in each interceptor."
+

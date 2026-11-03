@@ -1,0 +1,33 @@
+# Reference end state: two replicas, the pod label team=starfleet, requests
+# and limits for the container and a NodePort Service. The Trigger stays.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: github-push
+      bindings:
+        - ref: github-push
+      template:
+        ref: ci-build-run
+  resources:
+    kubernetesResource:
+      replicas: 2
+      serviceType: NodePort
+      spec:
+        template:
+          metadata:
+            labels:
+              team: starfleet
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    cpu: 50m
+                    memory: 64Mi
+                  limits:
+                    cpu: 200m
+                    memory: 128Mi

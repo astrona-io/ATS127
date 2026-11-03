@@ -1,0 +1,33 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: gitlab-push
+      interceptors:
+        - ref:
+            name: gitlab
+          params:
+            - name: secretRef
+              value:
+                secretName: gitlab-webhook-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value:
+                - Push Hook
+        - ref:
+            name: cel
+          params:
+            - name: filter
+              value: body.ref == 'refs/heads/main'
+            - name: overlays
+              value:
+                - key: branch
+                  expression: body.ref.split('/')[2]
+      bindings:
+        - ref: gitlab-push
+      template:
+        ref: ci-build-run

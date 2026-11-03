@@ -1,0 +1,15 @@
+# Reads the three values of a GitHub push event. branch gets the full ref,
+# for example refs/heads/main.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-push
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head_commit.id)
+    - name: branch
+      value: $(body.ref)

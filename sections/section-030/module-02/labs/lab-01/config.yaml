@@ -1,0 +1,61 @@
+# Clean Up Old Runs (LAB) — Astrona graded lab
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-127-lab-030-02"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton"
+      description: "Installs the tkn CLI 0.46.2, Tekton Pipelines v1.17.1 and Tekton Triggers v0.37.2 with the core interceptors, and starts the webhook client"
+      type: "file"
+      source: "bootstrap/01-install-tekton.sh"
+    - name: "ats-127-lab-030-02-setup"
+      description: "Installs the push path from the earlier modules, the EventListener, and four seeded PipelineRuns"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespace starfleet"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-tekton"
+      description: "Waits until every Tekton Deployment and the webhook client are ready"
+      type: "file"
+      source: "testing/wait-for-tekton.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-old-runs-removed"
+      description: "The runs labelled purpose=old-build and their TaskRuns are gone"
+      type: "file"
+      source: "validation/validate-old-runs-removed.sh"
+    - name: "validate-release-kept"
+      description: "The run release-1 still exists with its label"
+      type: "file"
+      source: "validation/validate-release-kept.sh"
+    - name: "validate-cleaner-rbac"
+      description: "The ServiceAccount run-cleaner can delete pipelineruns in starfleet and nothing else"
+      type: "file"
+      source: "validation/validate-cleaner-rbac.sh"
+    - name: "validate-cronjob"
+      description: "The CronJob cleanup-old-runs runs as run-cleaner with a safe selector and history limits"
+      type: "file"
+      source: "validation/validate-cronjob.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - nicolaka/netshoot:v0.13

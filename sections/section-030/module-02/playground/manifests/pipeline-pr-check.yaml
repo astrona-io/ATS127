@@ -1,0 +1,52 @@
+# The Pipeline that pull request events start. Like ci-build, it reports the
+# values it received. The result summary is "checked pull request <n> at <revision>".
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: pr-check
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      type: string
+      description: The clone URL of the repository
+    - name: revision
+      type: string
+      description: The head commit ID of the pull request
+    - name: pr-number
+      type: string
+      description: The number of the pull request
+  results:
+    - name: summary
+      description: What was checked
+      value: $(tasks.check.results.summary)
+  tasks:
+    - name: check
+      params:
+        - name: repo-url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.revision)
+        - name: pr-number
+          value: $(params.pr-number)
+      taskSpec:
+        params:
+          - name: repo-url
+            type: string
+          - name: revision
+            type: string
+          - name: pr-number
+            type: string
+        results:
+          - name: summary
+            description: What was checked
+        steps:
+          - name: report
+            image: busybox:1.37.0
+            script: |
+              #!/bin/sh
+              set -eu
+              echo "Repository:   $(params.repo-url)"
+              echo "Pull request: $(params.pr-number)"
+              echo "Revision:     $(params.revision)"
+              printf 'checked pull request %s at %s' "$(params.pr-number)" "$(params.revision)" | tee "$(results.summary.path)"

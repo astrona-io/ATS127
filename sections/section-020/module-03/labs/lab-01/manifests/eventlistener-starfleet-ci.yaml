@@ -1,0 +1,19 @@
+# The EventListener of the lab: its one Trigger calls the custom interceptor
+# branch-check and then reads the binding branch-push.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: branch-push
+      interceptors:
+        - ref:
+            name: branch-check
+            kind: ClusterInterceptor
+      bindings:
+        - ref: branch-push
+      template:
+        ref: ci-build-run

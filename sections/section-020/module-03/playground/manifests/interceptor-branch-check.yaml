@@ -1,0 +1,82 @@
+# The custom interceptor of this module: a small HTTP service. It reads the
+# InterceptorRequest, continues for pushes to a branch and adds the short
+# branch name as the extension short_branch. It stops everything else.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: branch-check-code
+  namespace: starfleet
+data:
+  server.py: |
+    import json
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    PREFIX = "refs/heads/"
+
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            length = int(self.headers.get("Content-Length", 0))
+            request = json.loads(self.rfile.read(length) or b"{}")
+            body = json.loads(request.get("body") or "{}")
+            ref = body.get("ref", "")
+            if ref.startswith(PREFIX):
+                response = {"continue": True, "extensions": {"short_branch": ref[len(PREFIX):]}}
+            else:
+                response = {"continue": False, "status": {"code": 9, "message": "only pushes to a branch are built"}}
+            data = json.dumps(response).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+        def log_message(self, fmt, *args):
+            print(fmt % args, flush=True)
+
+
+    HTTPServer(("", 8080), Handler).serve_forever()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: branch-check
+  namespace: starfleet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: branch-check
+  template:
+    metadata:
+      labels:
+        app: branch-check
+    spec:
+      containers:
+        - name: server
+          image: python:3.12-alpine
+          command: ["python", "/app/server.py"]
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+          volumeMounts:
+            - name: code
+              mountPath: /app
+      volumes:
+        - name: code
+          configMap:
+            name: branch-check-code
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: branch-check
+  namespace: starfleet
+spec:
+  selector:
+    app: branch-check
+  ports:
+    - port: 80
+      targetPort: 8080

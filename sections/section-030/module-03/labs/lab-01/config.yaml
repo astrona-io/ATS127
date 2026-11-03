@@ -1,0 +1,57 @@
+# Repair The Docs Trigger (LAB) — Astrona graded lab
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-127-lab-030-03"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton"
+      description: "Installs the tkn CLI 0.46.2, Tekton Pipelines v1.17.1 and Tekton Triggers v0.37.2 with the core interceptors, and starts the webhook client"
+      type: "file"
+      source: "bootstrap/01-install-tekton.sh"
+    - name: "ats-127-lab-030-03-setup"
+      description: "Installs the build path, the docs-check Pipeline and template, the broken Trigger docs-check, and the EventListener"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespace starfleet"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-tekton"
+      description: "Waits until every Tekton Deployment and the webhook client are ready"
+      type: "file"
+      source: "testing/wait-for-tekton.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-trigger-definition"
+      description: "The Trigger docs-check has the selector label, the github and cel interceptors, and a filter on docs/"
+      type: "file"
+      source: "validation/validate-trigger-definition.sh"
+    - name: "validate-docs-push"
+      description: "A push to main that modifies docs/status.md starts docs-check and ci-build"
+      type: "file"
+      source: "validation/validate-docs-push.sh"
+    - name: "validate-src-push"
+      description: "A push to main that modifies only src/bridge.go starts ci-build and not docs-check"
+      type: "file"
+      source: "validation/validate-src-push.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - nicolaka/netshoot:v0.13

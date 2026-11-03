@@ -13,10 +13,12 @@ This section puts the pieces together. You first compare the payloads of GitHub 
 - How one event runs through every selected Trigger, and how the interceptors of each Trigger decide which one creates a run.
 - How a Trigger can create its runs with its own ServiceAccount, and what the EventListener needs for that.
 - How to follow an event by its event ID, read the EventListener with `tkn`, and clean up event-driven runs by label.
+- How to remove old runs by label and age, and how to schedule the cleanup with a CronJob and minimal RBAC.
+- How to filter on changed paths with CEL and start several Pipelines from one event.
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has three modules. Each has a landing page, short parts, a graded lab right after the part it tests, and a summary, followed by a knowledge check. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Run CI On Push And Pull Request Events
 
@@ -26,6 +28,26 @@ The module starts at its landing page, which also launches the playground. The p
 2. One EventListener, Several Triggers, followed by the lab **Add A Pull Request Trigger**
 3. Trace And Clean Up Event-Driven Runs
 4. Summary
+
+### 2. Run Lifecycle: Retention And Cleanup
+
+List what an event leaves behind, delete runs by label and age, schedule a cleanup with a CronJob, and set retention labels in the template. The module has its own playground.
+
+1. What An Event Leaves Behind
+2. Delete Runs By Label And By Age
+3. Automate Cleanup With A CronJob, followed by the lab **Clean Up Old Runs**
+4. Retention Labels In The Template
+5. Summary
+
+### 3. Path-Filtered And Multi-Pipeline Triggers
+
+Read the file lists of a push, filter on paths with CEL, fan one event out to several Pipelines, and handle edge cases. The module has its own playground.
+
+1. Which Files Did A Push Change
+2. Filter On Paths With CEL
+3. Fan Out To Several Pipelines, followed by the lab **Repair The Docs Trigger**
+4. Edge Cases And Build Unless Docs Only
+5. Summary
 
 ## Section capstone: Repair An Event-Driven CI System
 

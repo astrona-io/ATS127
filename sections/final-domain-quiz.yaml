@@ -1,4 +1,4 @@
-# Final domain knowledge check across all three sections.
+# Final domain knowledge check across all three sections and their modules.
 schema_version: 1
 kind: question_bank
 id: ats127-final
@@ -217,3 +217,405 @@ questions:
         explanation: "Not correct. Interceptors run before the run is created, so they would have answered."
     correct_option: a
     explanation: "Correct. With no Trigger selected, no interceptor runs."
+
+  - id: ats127-final-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Change replicas the supported way
+    source_readings:
+    - sections/section-010/module-02/course-02-replicas-service-type-and-pod-template.md
+    prompt: How do you run three replicas of an EventListener?
+    options:
+    - id: a
+      text: Run kubectl scale on the Deployment el-<name>.
+      explanation: Not correct. The controller reverts a direct change.
+    - id: b
+      text: Set replicas under spec.resources.kubernetesResource in the EventListener.
+      explanation: Correct. The controller then updates the Deployment.
+    - id: c
+      text: Create three EventListeners with the same name.
+      explanation: Not correct. Names are unique per namespace.
+    - id: d
+      text: Add a HorizontalPodAutoscaler to the TriggerTemplate.
+      explanation: Not correct. A template does not own the pods.
+    correct_option: b
+    explanation: Correct. The controller then updates the Deployment.
+  - id: ats127-final-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Name the metrics port
+    source_readings:
+    - sections/section-010/module-02/course-04-logs-metrics-and-timeouts.md
+    prompt: On which port does the EventListener Service expose metrics?
+    options:
+    - id: a
+      text: '9000'
+      explanation: Correct. The metrics port is separate from the event port 8080.
+    - id: b
+      text: '8080'
+      explanation: Not correct. That is the port for events.
+    - id: c
+      text: '443'
+      explanation: Not correct. The listener serves plain HTTP in the lab.
+    - id: d
+      text: '10250'
+      explanation: Not correct. That is the kubelet port.
+    correct_option: a
+    explanation: Correct. The metrics port is separate from the event port 8080.
+  - id: ats127-final-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Know what an object value becomes
+    source_readings:
+    - sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+    prompt: A path ends at a whole JSON object. What does the template parameter receive?
+    options:
+    - id: a
+      text: A map the template can index.
+      explanation: Not correct. Parameters are strings.
+    - id: b
+      text: The object as a JSON string.
+      explanation: Correct. Parameters are strings.
+    - id: c
+      text: An empty value.
+      explanation: Not correct. The object is passed on.
+    - id: d
+      text: The event is stopped.
+      explanation: Not correct. No error occurs for this.
+    correct_option: b
+    explanation: Correct. Parameters are strings.
+  - id: ats127-final-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Use $(uid)
+    source_readings:
+    - sections/section-010/module-03/course-04-pipelinerun-options-defaults-and-uid.md
+    prompt: What is $(uid) in a TriggerTemplate?
+    options:
+    - id: a
+      text: A unique string created for each evaluation of the template.
+      explanation: Correct. It can be used to name resources uniquely.
+    - id: b
+      text: The event ID.
+      explanation: Not correct. The event ID is context.eventID or the label.
+    - id: c
+      text: The UID of the Pipeline.
+      explanation: Not correct. It is not read from a Pipeline.
+    - id: d
+      text: The same value for every event.
+      explanation: Not correct. It is different each time.
+    correct_option: a
+    explanation: Correct. It can be used to name resources uniquely.
+  - id: ats127-final-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Configure the gitlab interceptor
+    source_readings:
+    - sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+    prompt: Which parameters does the gitlab interceptor take for the lab setup?
+    options:
+    - id: a
+      text: token and branch.
+      explanation: Not correct. Those are not parameter names.
+    - id: b
+      text: secretRef and eventTypes.
+      explanation: Correct. The secretRef names the Secret and the key.
+    - id: c
+      text: url and port.
+      explanation: Not correct. It does not call a URL.
+    - id: d
+      text: body and header.
+      explanation: Not correct. Those are CEL variables.
+    correct_option: b
+    explanation: Correct. The secretRef names the Secret and the key.
+  - id: ats127-final-q15
+    type: single_choice
+    difficulty: advanced
+    learning_objective: Serve several providers
+    source_readings:
+    - sections/section-020/module-02/course-04-several-providers-one-eventlistener.md
+    prompt: One EventListener serves GitHub and GitLab. A GitLab event fails its token
+      check. What happens to the GitHub Trigger?
+    options:
+    - id: a
+      text: Nothing; a Trigger whose interceptors stop an event skips only itself.
+      explanation: Correct. Triggers are independent.
+    - id: b
+      text: It also stops.
+      explanation: Not correct. Each Trigger runs on its own.
+    - id: c
+      text: It runs with an empty body.
+      explanation: Not correct. It does not run for this event.
+    - id: d
+      text: The EventListener restarts.
+      explanation: Not correct. No restart happens.
+    correct_option: a
+    explanation: Correct. Triggers are independent.
+  - id: ats127-final-q16
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Return extensions
+    source_readings:
+    - sections/section-020/module-03/course-01-the-interceptor-contract.md
+    prompt: What does a service return to give a binding the value short_branch?
+    options:
+    - id: a
+      text: A header named short_branch.
+      explanation: Not correct. Headers are not read this way.
+    - id: b
+      text: An extensions object with the key short_branch, read as $(extensions.short_branch).
+      explanation: Correct. Extensions are merged into the chain.
+    - id: c
+      text: A new body.
+      explanation: Not correct. Interceptors do not change the body.
+    - id: d
+      text: A ConfigMap entry.
+      explanation: Not correct. The data travels in the response.
+    correct_option: b
+    explanation: Correct. Extensions are merged into the chain.
+  - id: ats127-final-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Enable HTTPS
+    source_readings:
+    - sections/section-020/module-03/course-04-secure-and-troubleshoot-a-custom-interceptor.md
+    prompt: How do you make the EventListener call the interceptor over HTTPS?
+    options:
+    - id: a
+      text: Serve a certificate and set the caBundle in the ClusterInterceptor.
+      explanation: Correct. The listener checks the certificate against the bundle.
+    - id: b
+      text: Use port 443 in the Trigger.
+      explanation: Not correct. The port is in the ClusterInterceptor.
+    - id: c
+      text: Add a header to the binding.
+      explanation: Not correct. Bindings do not choose transport.
+    - id: d
+      text: It is always HTTPS.
+      explanation: Not correct. Without a caBundle it is plain HTTP.
+    correct_option: a
+    explanation: Correct. The listener checks the certificate against the bundle.
+  - id: ats127-final-q18
+    type: single_choice
+    difficulty: beginner
+    learning_objective: Delete by label
+    source_readings:
+    - sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+    prompt: Which command deletes runs with the label purpose=old-build?
+    options:
+    - id: a
+      text: kubectl delete pipelines -l purpose=old-build
+      explanation: Not correct. Pipelines are definitions.
+    - id: b
+      text: kubectl delete pipelineruns -n starfleet -l purpose=old-build
+      explanation: Correct. The selector picks the runs.
+    - id: c
+      text: kubectl delete pods --all
+      explanation: Not correct. That removes every pod.
+    - id: d
+      text: kubectl get pipelineruns -l purpose=old-build
+      explanation: Not correct. get only lists.
+    correct_option: b
+    explanation: Correct. The selector picks the runs.
+  - id: ats127-final-q19
+    type: single_choice
+    difficulty: advanced
+    learning_objective: Choose a negative selector
+    source_readings:
+    - sections/section-030/module-02/course-04-retention-labels-in-the-template.md
+    prompt: Why is purpose!=release a good keep rule for runs that were created before
+      the label existed?
+    options:
+    - id: a
+      text: It also matches runs without a purpose label, so they are cleaned, and releases
+        are kept.
+      explanation: Correct. A positive selector would never see them.
+    - id: b
+      text: It matches only releases.
+      explanation: Not correct. It excludes them.
+    - id: c
+      text: It matches nothing without the label.
+      explanation: Not correct. Runs without the label do match.
+    - id: d
+      text: It deletes releases first.
+      explanation: Not correct. They are excluded.
+    correct_option: a
+    explanation: Correct. A positive selector would never see them.
+  - id: ats127-final-q20
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Write a path test
+    source_readings:
+    - sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+    prompt: Which CEL expression is true when a commit modified a file under docs/?
+    options:
+    - id: a
+      text: body.commits.modified.startsWith('docs/')
+      explanation: Not correct. commits is a list, not an object.
+    - id: b
+      text: body.commits.exists(c, c.modified.exists(f, f.startsWith('docs/')))
+      explanation: Correct. exists tests each commit and each path.
+    - id: c
+      text: body.modified == 'docs/'
+      explanation: Not correct. modified is a list of paths.
+    - id: d
+      text: body.head_commit.docs
+      explanation: Not correct. No such field.
+    correct_option: b
+    explanation: Correct. exists tests each commit and each path.
+  - id: ats127-final-q21
+    type: single_choice
+    difficulty: advanced
+    learning_objective: Build unless docs only
+    source_readings:
+    - sections/section-030/module-03/course-04-edge-cases-and-build-unless-docs-only.md
+    prompt: Which idea makes the build Trigger skip pushes that change only docs/?
+    options:
+    - id: a
+      text: Match when any changed path is not under docs/, using a negated startsWith
+        inside exists.
+      explanation: Correct. Then a docs-only push is false.
+    - id: b
+      text: Match when every path starts with docs/.
+      explanation: Not correct. That is the docs-only case.
+    - id: c
+      text: Remove the cel interceptor.
+      explanation: Not correct. Then every push builds.
+    - id: d
+      text: Filter on head_commit.message.
+      explanation: Not correct. The message says nothing about files.
+    correct_option: a
+    explanation: Correct. Then a docs-only push is false.
+  - id: ats127-final-q22
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Choose Triggers with selectors
+    source_readings:
+    - sections/section-010/module-02/course-03-choose-which-triggers-an-eventlistener-serves.md
+    prompt: An EventListener has a labelSelector for team=starfleet. A Trigger in the
+      same namespace has no labels. What happens when an event arrives?
+    options:
+    - id: a
+      text: The Trigger runs because it is in the same namespace.
+      explanation: Not correct. The selector must match too.
+    - id: b
+      text: The client gets 404.
+      explanation: Not correct. The response is still 202.
+    - id: c
+      text: The Trigger runs but skips its interceptors.
+      explanation: Not correct. It does not run at all.
+    - id: d
+      text: The Trigger never runs, and the client still gets 202.
+      explanation: Correct. A Trigger that matches no selector is not evaluated.
+    correct_option: d
+    explanation: Correct. A Trigger that matches no selector is not evaluated.
+  - id: ats127-final-q23
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Reference a ClusterTriggerBinding
+    source_readings:
+    - sections/section-010/module-03/course-02-combine-several-bindings.md
+    prompt: How does a Trigger refer to a ClusterTriggerBinding?
+    options:
+    - id: a
+      text: With ref only; the kind is found by name.
+      explanation: Not correct. The default kind is TriggerBinding.
+    - id: b
+      text: With a namespace field.
+      explanation: Not correct. A cluster object has no namespace.
+    - id: c
+      text: It cannot be referenced.
+      explanation: Not correct. It can.
+    - id: d
+      text: 'With ref and kind: ClusterTriggerBinding.'
+      explanation: Correct. Without the kind, Triggers looks for a namespaced binding.
+    correct_option: d
+    explanation: Correct. Without the kind, Triggers looks for a namespaced binding.
+  - id: ats127-final-q24
+    type: single_choice
+    difficulty: beginner
+    learning_objective: Name a Bitbucket Cloud event type
+    source_readings:
+    - sections/section-020/module-02/course-02-bitbucket-server-and-cloud.md
+    prompt: Which eventTypes value matches a push in Bitbucket Cloud?
+    options:
+    - id: a
+      text: Push Hook
+      explanation: Not correct. That is GitLab.
+    - id: b
+      text: push
+      explanation: Not correct. That is GitHub.
+    - id: c
+      text: pullrequest
+      explanation: Not correct. That is not a push.
+    - id: d
+      text: repo:push
+      explanation: Correct. Cloud events use this form.
+    correct_option: d
+    explanation: Correct. Cloud events use this form.
+  - id: ats127-final-q25
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Register the interceptor
+    source_readings:
+    - sections/section-020/module-03/course-03-register-a-clusterinterceptor-and-use-it.md
+    prompt: Which field of the ClusterInterceptor points at the service?
+    options:
+    - id: a
+      text: spec.ref
+      explanation: Not correct. A Trigger uses ref, not the ClusterInterceptor.
+    - id: b
+      text: spec.url
+      explanation: Not correct. The object names a Service.
+    - id: c
+      text: metadata.service
+      explanation: Not correct. Metadata has no such field.
+    - id: d
+      text: spec.clientConfig.service, with name, namespace and port.
+      explanation: Correct. A caBundle there turns on HTTPS.
+    correct_option: d
+    explanation: Correct. A caBundle there turns on HTTPS.
+  - id: ats127-final-q26
+    type: single_choice
+    difficulty: advanced
+    learning_objective: See the limit of count rules
+    source_readings:
+    - sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+    prompt: Why can --keep delete a release run you wanted to keep?
+    options:
+    - id: a
+      text: It deletes the oldest by name.
+      explanation: Not correct. It uses creation time.
+    - id: b
+      text: It ignores the Pipeline.
+      explanation: Not correct. It selects by Pipeline.
+    - id: c
+      text: It only deletes failed runs.
+      explanation: Not correct. It does not look at the result.
+    - id: d
+      text: It counts runs of one Pipeline and does not know which are releases.
+      explanation: Correct. Select with a label instead.
+    correct_option: d
+    explanation: Correct. Select with a label instead.
+  - id: ats127-final-q27
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: Cover new files
+    source_readings:
+    - sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+    prompt: A new file docs/new.md is pushed. Which list contains it?
+    options:
+    - id: a
+      text: modified
+      explanation: Not correct. Only changed files are there.
+    - id: b
+      text: removed
+      explanation: Not correct. That is for deleted files.
+    - id: c
+      text: head_commit
+      explanation: Not correct. That is a commit object.
+    - id: d
+      text: added
+      explanation: Correct. A filter on modified alone would miss it.
+    correct_option: d
+    explanation: Correct. A filter on modified alone would miss it.

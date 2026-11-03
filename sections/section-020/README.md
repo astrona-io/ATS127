@@ -13,10 +13,12 @@ Tekton Triggers does that work with interceptors. An interceptor is a step that 
 - How `eventTypes` filters on the header `X-GitHub-Event`, and how the GitLab and Bitbucket interceptors check their own headers.
 - How the CEL interceptor filters events with `filter` and adds values to `extensions` with `overlays`, and how a binding reads them.
 - How to chain interceptors, and where to read why an event created nothing.
+- How GitLab and Bitbucket events are checked, and how to serve several providers from one EventListener.
+- How to write, deploy, register and secure a custom `ClusterInterceptor`.
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has three modules. Each has a landing page, short parts, a graded lab right after the part it tests, and a summary, followed by a knowledge check. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Verify And Filter Webhooks With Interceptors
 
@@ -26,6 +28,26 @@ The module starts at its landing page, which also launches the playground. The p
 2. Verify GitHub Webhooks With An HMAC Secret
 3. Filter And Enrich Events With CEL, followed by the lab **Repair Signature Checks And A CEL Filter**
 4. Summary
+
+### 2. GitLab And Bitbucket Interceptors
+
+Check GitLab tokens and event types, handle Bitbucket Server and Cloud, normalize branches with CEL, and serve several providers from one EventListener. The module has its own playground.
+
+1. GitLab Token And Event Types
+2. Bitbucket Server And Bitbucket Cloud
+3. Normalize Provider Payloads With CEL, followed by the lab **Accept Signed GitLab Pushes**
+4. Several Providers On One EventListener
+5. Summary
+
+### 3. Write A Custom ClusterInterceptor
+
+Describe the interceptor contract, deploy a small service, register it as a ClusterInterceptor, and secure and troubleshoot it. The module has its own playground.
+
+1. The Interceptor Contract
+2. Deploy The Interceptor Service
+3. Register A ClusterInterceptor And Use It, followed by the lab **Repair A Custom Interceptor**
+4. Secure And Troubleshoot A Custom Interceptor
+5. Summary
 
 ## Section capstone: Harden An Open EventListener
 

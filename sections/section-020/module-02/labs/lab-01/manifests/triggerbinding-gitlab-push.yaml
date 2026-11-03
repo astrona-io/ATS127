@@ -1,0 +1,15 @@
+# Reads a GitLab push event. The branch comes from an extension that a CEL
+# interceptor must add: this binding is not to be changed in the lab.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: gitlab-push
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.project.git_http_url)
+    - name: revision
+      value: $(body.checkout_sha)
+    - name: branch
+      value: $(extensions.branch)

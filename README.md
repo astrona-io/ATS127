@@ -31,9 +31,9 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | Tekton Triggers Architecture And RBAC | 1 | 1 + capstone | Triggers architecture |
-| [020](sections/section-020) | Verify And Filter Events With Interceptors | 1 | 1 + capstone | Interceptors |
-| [030](sections/section-030) | Event-Driven CI End To End | 1 | 1 + capstone | Event-driven CI |
+| [010](sections/section-010) | Tekton Triggers Architecture And RBAC | 3 | 3 + capstone | Triggers architecture |
+| [020](sections/section-020) | Verify And Filter Events With Interceptors | 3 | 3 + capstone | Interceptors |
+| [030](sections/section-030) | Event-Driven CI End To End | 3 | 3 + capstone | Event-driven CI |
 
 The order follows one event. Section 010 builds the path from an HTTP request
 to a `PipelineRun`: the EventListener, its ServiceAccount and RBAC, a binding
@@ -49,8 +49,14 @@ start nothing.
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
 | 010-01 | [Turn A Webhook Into A PipelineRun](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-02 | [Configure The EventListener](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
+| 010-03 | [Bindings And Templates In Depth](sections/section-010/module-03/course.md) | 4 | [lab-01](sections/section-010/module-03/labs/lab-01) |
 | 020-01 | [Verify And Filter Webhooks With Interceptors](sections/section-020/module-01/course.md) | 3 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [GitLab And Bitbucket Interceptors](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
+| 020-03 | [Write A Custom ClusterInterceptor](sections/section-020/module-03/course.md) | 4 | [lab-01](sections/section-020/module-03/labs/lab-01) |
 | 030-01 | [Run CI On Push And Pull Request Events](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-02 | [Run Lifecycle: Retention And Cleanup](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
+| 030-03 | [Path-Filtered And Multi-Pipeline Triggers](sections/section-030/module-03/course.md) | 4 | [lab-01](sections/section-030/module-03/labs/lab-01) |
 
 | Lab | Title | Kind | Faults or work |
 | --- | --- | --- | --- |

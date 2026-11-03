@@ -1,0 +1,62 @@
+# Four finished-style PipelineRuns with fixed names and a purpose label, so
+# the cleanup commands in this module have something to select. Three are old
+# builds and one is a release build.
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: old-build-1
+  namespace: starfleet
+  labels:
+    purpose: old-build
+spec:
+  pipelineRef:
+    name: ci-build
+  params:
+    - {name: repo-url, value: "https://git.starfleet.example/fleet/warp-core.git"}
+    - {name: revision, value: "1111111111111111111111111111111111111111"}
+    - {name: branch, value: main}
+---
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: old-build-2
+  namespace: starfleet
+  labels:
+    purpose: old-build
+spec:
+  pipelineRef:
+    name: ci-build
+  params:
+    - {name: repo-url, value: "https://git.starfleet.example/fleet/warp-core.git"}
+    - {name: revision, value: "2222222222222222222222222222222222222222"}
+    - {name: branch, value: main}
+---
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: old-build-3
+  namespace: starfleet
+  labels:
+    purpose: old-build
+spec:
+  pipelineRef:
+    name: ci-build
+  params:
+    - {name: repo-url, value: "https://git.starfleet.example/fleet/warp-core.git"}
+    - {name: revision, value: "3333333333333333333333333333333333333333"}
+    - {name: branch, value: main}
+---
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: release-1
+  namespace: starfleet
+  labels:
+    purpose: release
+spec:
+  pipelineRef:
+    name: ci-build
+  params:
+    - {name: repo-url, value: "https://git.starfleet.example/fleet/warp-core.git"}
+    - {name: revision, value: "4444444444444444444444444444444444444444"}
+    - {name: branch, value: release}

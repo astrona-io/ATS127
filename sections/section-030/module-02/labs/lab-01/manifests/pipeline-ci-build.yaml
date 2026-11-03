@@ -1,0 +1,53 @@
+# The Pipeline that every push event starts. It does not clone anything: its
+# one step reports the values it received, so a run proves which parameters
+# the TriggerTemplate passed. The result summary is "built <branch> at <revision>".
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: ci-build
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      type: string
+      description: The clone URL of the repository
+    - name: revision
+      type: string
+      description: The commit ID to build
+    - name: branch
+      type: string
+      description: The branch that was pushed
+  results:
+    - name: summary
+      description: What was built
+      value: $(tasks.build.results.summary)
+  tasks:
+    - name: build
+      params:
+        - name: repo-url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.revision)
+        - name: branch
+          value: $(params.branch)
+      taskSpec:
+        params:
+          - name: repo-url
+            type: string
+          - name: revision
+            type: string
+          - name: branch
+            type: string
+        results:
+          - name: summary
+            description: What was built
+        steps:
+          - name: report
+            image: busybox:1.37.0
+            script: |
+              #!/bin/sh
+              set -eu
+              echo "Repository: $(params.repo-url)"
+              echo "Branch:     $(params.branch)"
+              echo "Revision:   $(params.revision)"
+              printf 'built %s at %s' "$(params.branch)" "$(params.revision)" | tee "$(results.summary.path)"

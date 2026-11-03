@@ -1,0 +1,246 @@
+# Knowledge check for module 02 of section-010. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-010-m02
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-010-02
+  title: "Operate An EventListener"
+placement:
+  position: after
+  reading: sections/section-010/module-02/course-05-summary.md
+questions:
+  - id: ats127-010-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the objects the controller creates for an EventListener"
+    source_readings:
+      - sections/section-010/module-02/course-01-read-an-eventlistener-spec-and-status.md
+    prompt: "What does the Triggers controller create for an EventListener named starfleet-ci?"
+    options:
+      - id: a
+        text: "A Deployment and a Service named el-starfleet-ci."
+        explanation: "Correct. The controller keeps both equal to the EventListener."
+      - id: b
+        text: "A CronJob named starfleet-ci."
+        explanation: "Not correct. The controller creates no CronJob."
+      - id: c
+        text: "A StatefulSet named starfleet-ci."
+        explanation: "Not correct. It creates a Deployment, not a StatefulSet."
+      - id: d
+        text: "Only a Pod, with no Service."
+        explanation: "Not correct. A Service gives clients the address."
+    correct_option: a
+    explanation: "Correct. The controller keeps both equal to the EventListener."
+
+  - id: ats127-010-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find the objects of an EventListener by label"
+    source_readings:
+      - sections/section-010/module-02/course-01-read-an-eventlistener-spec-and-status.md
+    prompt: "Which label finds the Deployment, the Service and the pods of an EventListener?"
+    options:
+      - id: a
+        text: "app=el"
+        explanation: "Not correct. No such shared label exists."
+      - id: b
+        text: "triggers.tekton.dev/triggers-eventid"
+        explanation: "Not correct. That label is on runs and records the event ID."
+      - id: c
+        text: "team=<name>"
+        explanation: "Not correct. That is a label you choose on Triggers."
+      - id: d
+        text: "eventlistener=<name>"
+        explanation: "Correct. The label carries the EventListener name."
+    correct_option: d
+    explanation: "Correct. The label carries the EventListener name."
+
+  - id: ats127-010-m02-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the status of an EventListener"
+    source_readings:
+      - sections/section-010/module-02/course-01-read-an-eventlistener-spec-and-status.md
+    prompt: "Where does an EventListener publish the address that clients should call?"
+    options:
+      - id: a
+        text: "In the spec, under serviceType."
+        explanation: "Not correct. The spec is what you ask for, not what exists."
+      - id: b
+        text: "In the TriggerTemplate."
+        explanation: "Not correct. A template knows nothing about the listener."
+      - id: c
+        text: "In its status, together with the conditions Available and Ready."
+        explanation: "Correct. The status holds the address and the generated name."
+      - id: d
+        text: "In a ConfigMap in tekton-pipelines."
+        explanation: "Not correct. No such ConfigMap is written."
+    correct_option: c
+    explanation: "Correct. The status holds the address and the generated name."
+
+  - id: ats127-010-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Change replicas the supported way"
+    source_readings:
+      - sections/section-010/module-02/course-02-replicas-service-type-and-pod-template.md
+    prompt: "How do you run three replicas of an EventListener?"
+    options:
+      - id: a
+        text: "Run kubectl scale on the Deployment el-<name>."
+        explanation: "Not correct. The controller reverts a direct change."
+      - id: b
+        text: "Set replicas under spec.resources.kubernetesResource in the EventListener."
+        explanation: "Correct. The controller then updates the Deployment."
+      - id: c
+        text: "Create three EventListeners with the same name."
+        explanation: "Not correct. Names are unique per namespace."
+      - id: d
+        text: "Add a HorizontalPodAutoscaler to the TriggerTemplate."
+        explanation: "Not correct. A template does not own the pods."
+    correct_option: b
+    explanation: "Correct. The controller then updates the Deployment."
+
+  - id: ats127-010-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why direct edits of the Deployment fail"
+    source_readings:
+      - sections/section-010/module-02/course-02-replicas-service-type-and-pod-template.md
+    prompt: "You edit the Deployment el-starfleet-ci to add a node selector. A minute later the change is gone. Why?"
+    options:
+      - id: a
+        text: "The controller owns the Deployment and reverts anything that differs from the EventListener."
+        explanation: "Correct. Put the node selector in the pod template of the EventListener."
+      - id: b
+        text: "Kubernetes garbage collection removes edits."
+        explanation: "Not correct. Garbage collection removes objects, not fields."
+      - id: c
+        text: "Node selectors are not allowed on pods."
+        explanation: "Not correct. They are allowed."
+      - id: d
+        text: "The Service overwrites the Deployment."
+        explanation: "Not correct. A Service does not write to a Deployment."
+    correct_option: a
+    explanation: "Correct. Put the node selector in the pod template of the EventListener."
+
+  - id: ats127-010-m02-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose Triggers with selectors"
+    source_readings:
+      - sections/section-010/module-02/course-03-choose-which-triggers-an-eventlistener-serves.md
+    prompt: "An EventListener has a labelSelector for team=starfleet. A Trigger in the same namespace has no labels. What happens when an event arrives?"
+    options:
+      - id: a
+        text: "The Trigger runs because it is in the same namespace."
+        explanation: "Not correct. The selector must match too."
+      - id: b
+        text: "The client gets 404."
+        explanation: "Not correct. The response is still 202."
+      - id: c
+        text: "The Trigger runs but skips its interceptors."
+        explanation: "Not correct. It does not run at all."
+      - id: d
+        text: "The Trigger never runs, and the client still gets 202."
+        explanation: "Correct. A Trigger that matches no selector is not evaluated."
+    correct_option: d
+    explanation: "Correct. A Trigger that matches no selector is not evaluated."
+
+  - id: ats127-010-m02-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Match RBAC to a namespace selector"
+    source_readings:
+      - sections/section-010/module-02/course-03-choose-which-triggers-an-eventlistener-serves.md
+    prompt: "A namespaceSelector makes an EventListener serve Triggers in another namespace. What must exist there?"
+    options:
+      - id: a
+        text: "Nothing, the controller grants access."
+        explanation: "Not correct. The controller does not grant rights."
+      - id: b
+        text: "A copy of the EventListener."
+        explanation: "Not correct. A copy is not needed."
+      - id: c
+        text: "A RoleBinding to tekton-triggers-eventlistener-roles for the ServiceAccount, or a ClusterRoleBinding for all namespaces."
+        explanation: "Correct. The listener must be allowed to read Triggers and create runs there."
+      - id: d
+        text: "A second Secret."
+        explanation: "Not correct. Secrets are about interceptors, not selection."
+    correct_option: c
+    explanation: "Correct. The listener must be allowed to read Triggers and create runs there."
+
+  - id: ats127-010-m02-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the reason an event was dropped"
+    source_readings:
+      - sections/section-010/module-02/course-04-logs-metrics-and-timeouts.md
+    prompt: "Where is the reason an interceptor stopped an event, such as a failed signature check?"
+    options:
+      - id: a
+        text: "In the EventListener pod log only."
+        explanation: "Not correct. The listener log lacks the interceptor's reason."
+      - id: b
+        text: "In the log of the core interceptors Deployment in tekton-pipelines."
+        explanation: "Correct. The EventListener log shows the event, the interceptor log shows why."
+      - id: c
+        text: "In the HTTP response body."
+        explanation: "Not correct. The response is 202 with the event ID."
+      - id: d
+        text: "In the PipelineRun status."
+        explanation: "Not correct. No run was created."
+    correct_option: b
+    explanation: "Correct. The EventListener log shows the event, the interceptor log shows why."
+
+  - id: ats127-010-m02-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the metrics port"
+    source_readings:
+      - sections/section-010/module-02/course-04-logs-metrics-and-timeouts.md
+    prompt: "On which port does the EventListener Service expose metrics?"
+    options:
+      - id: a
+        text: "9000"
+        explanation: "Correct. The metrics port is separate from the event port 8080."
+      - id: b
+        text: "8080"
+        explanation: "Not correct. That is the port for events."
+      - id: c
+        text: "443"
+        explanation: "Not correct. The listener serves plain HTTP in the lab."
+      - id: d
+        text: "10250"
+        explanation: "Not correct. That is the kubelet port."
+    correct_option: a
+    explanation: "Correct. The metrics port is separate from the event port 8080."
+
+  - id: ats127-010-m02-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Know who sets the timeouts"
+    source_readings:
+      - sections/section-010/module-02/course-04-logs-metrics-and-timeouts.md
+    prompt: "Who sets the read, write, idle and handler timeouts of an EventListener?"
+    options:
+      - id: a
+        text: "Each EventListener spec, under timeouts."
+        explanation: "Not correct. The spec has no such field for the server timeouts."
+      - id: b
+        text: "The TriggerTemplate."
+        explanation: "Not correct. A template sets run timeouts only."
+      - id: c
+        text: "The webhook client."
+        explanation: "Not correct. The client can set only its own timeout."
+      - id: d
+        text: "The controller sets them for every EventListener."
+        explanation: "Correct. You cannot set them per listener in the spec."
+    correct_option: d
+    explanation: "Correct. You cannot set them per listener in the spec."
+

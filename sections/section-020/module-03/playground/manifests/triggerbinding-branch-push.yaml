@@ -1,0 +1,14 @@
+# Reads the short branch name that the custom interceptor branch-check adds.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: branch-push
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+      value: $(body.repository.clone_url)
+    - name: revision
+      value: $(body.head_commit.id)
+    - name: branch
+      value: $(extensions.short_branch)

@@ -1,0 +1,12 @@
+# Registers the service branch-check as a ClusterInterceptor. The lab starts
+# with a wrong service name here.
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: ClusterInterceptor
+metadata:
+  name: branch-check
+spec:
+  clientConfig:
+    service:
+      name: branch-checker
+      namespace: starfleet
+      port: 80

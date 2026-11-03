@@ -1,0 +1,15 @@
+# The EventListener the lab starts with: it has no interceptors, so every
+# request is accepted and the binding finds no extension.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  triggers:
+    - name: gitlab-push
+      bindings:
+        - ref: gitlab-push
+      template:
+        ref: ci-build-run

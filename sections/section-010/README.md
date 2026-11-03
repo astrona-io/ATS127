@@ -13,10 +13,12 @@ This section builds that chain step by step. You first install Tekton Triggers o
 - How the Triggers controller turns an `EventListener` into a Deployment and a Service named `el-<name>`, and how to reach that Service from inside the cluster.
 - Why the EventListener needs a ServiceAccount bound to `tekton-triggers-eventlistener-roles` and `tekton-triggers-eventlistener-clusterroles`, and how a missing binding shows up.
 - How a `TriggerBinding` reads values from `$(body...)` and `$(header...)`, and how a `TriggerTemplate` uses them as `$(tt.params...)` in a `PipelineRun` with `generateName`.
+- How to operate an EventListener: its status, replicas, Service type, pod template, selectors, logs, metrics and timeouts.
+- How to read nested fields and arrays in bindings, combine several bindings, and create several resources from one template.
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has three modules. Each has a landing page, short parts, a graded lab right after the part it tests, and a summary, followed by a knowledge check. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Turn A Webhook Into A PipelineRun
 
@@ -26,6 +28,26 @@ The module starts at its landing page, which also launches the playground. The p
 2. The EventListener, Its ServiceAccount And RBAC
 3. TriggerBindings, TriggerTemplates And tt.params, followed by the lab **Create An EventListener For Push Events**
 4. Summary
+
+### 2. Configure The EventListener
+
+Read an EventListener's spec and status, set replicas, the Service type and the pod template, choose Triggers with selectors, and read logs, metrics and timeouts. The module has its own playground.
+
+1. Read An EventListener's Spec And Status
+2. Replicas, Service Type And Pod Template, followed by the lab **Scale And Place An EventListener**
+3. Choose Which Triggers An EventListener Serves
+4. Logs, Metrics And Timeouts
+5. Summary
+
+### 3. Bindings And Templates In Depth
+
+Read values with JSONPath, combine several bindings, create several resources from one template, and use options, defaults and `$(uid)`. The module has its own playground.
+
+1. Read Values With JSONPath
+2. Combine Several Bindings
+3. Templates With Several Resources, followed by the lab **Repair A Multi-Resource Template**
+4. PipelineRun Options, Defaults And uid
+5. Summary
 
 ## Section capstone: Repair An EventListener That Starts No Runs
 

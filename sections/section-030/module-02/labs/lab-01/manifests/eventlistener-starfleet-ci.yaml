@@ -1,0 +1,12 @@
+# The EventListener selects its Triggers by label instead of listing them:
+# every Trigger in starfleet with the label team: starfleet takes part.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: starfleet-ci
+  namespace: starfleet
+spec:
+  serviceAccountName: starfleet-triggers
+  labelSelector:
+    matchLabels:
+      team: starfleet

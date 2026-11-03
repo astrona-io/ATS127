@@ -1,0 +1,6 @@
+# Starting namespace for every ATS127 environment. Every Triggers object,
+# Pipeline and PipelineRun of the course lives in starfleet.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet

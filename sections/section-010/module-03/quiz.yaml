@@ -1,0 +1,246 @@
+# Knowledge check for module 03 of section-010. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats127-010-m03
+course_id: ATS127
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-010-03
+  title: "Bindings And Templates In Depth"
+placement:
+  position: after
+  reading: sections/section-010/module-03/course-05-summary.md
+questions:
+  - id: ats127-010-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read a nested field"
+    source_readings:
+      - sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+    prompt: "Which binding value reads the commit ID of head_commit?"
+    options:
+      - id: a
+        text: "$(body.head_commit.id)"
+        explanation: "Correct. A path with dots follows nested fields."
+      - id: b
+        text: "$(head_commit.id)"
+        explanation: "Not correct. The path must start with body."
+      - id: c
+        text: "$(header.head_commit.id)"
+        explanation: "Not correct. header reads request headers."
+      - id: d
+        text: "$(tt.params.head_commit.id)"
+        explanation: "Not correct. tt.params reads template parameters."
+    correct_option: a
+    explanation: "Correct. A path with dots follows nested fields."
+
+  - id: ats127-010-m03-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read a header"
+    source_readings:
+      - sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+    prompt: "Which expression reads the request header X-GitHub-Event?"
+    options:
+      - id: a
+        text: "$(body.X-GitHub-Event)"
+        explanation: "Not correct. Headers are not in the body."
+      - id: b
+        text: "$(extensions.X-GitHub-Event)"
+        explanation: "Not correct. Extensions are added by interceptors."
+      - id: c
+        text: "$(event.type)"
+        explanation: "Not correct. No such source exists."
+      - id: d
+        text: "$(header.X-Github-Event)"
+        explanation: "Correct. Headers are read through header."
+    correct_option: d
+    explanation: "Correct. Headers are read through header."
+
+  - id: ats127-010-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an array item"
+    source_readings:
+      - sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+    prompt: "A binding needs the first commit message. Which path is right?"
+    options:
+      - id: a
+        text: "$(body.commits.message)"
+        explanation: "Not correct. An array has no field named message."
+      - id: b
+        text: "$(body.commits[first])"
+        explanation: "Not correct. The index must be a number."
+      - id: c
+        text: "$(body.commits[0].message)"
+        explanation: "Correct. An index selects an item of an array."
+      - id: d
+        text: "$(body.commit.message)"
+        explanation: "Not correct. The field is commits."
+    correct_option: c
+    explanation: "Correct. An index selects an item of an array."
+
+  - id: ats127-010-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know what an object value becomes"
+    source_readings:
+      - sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+    prompt: "A path ends at a whole JSON object. What does the template parameter receive?"
+    options:
+      - id: a
+        text: "A map the template can index."
+        explanation: "Not correct. Parameters are strings."
+      - id: b
+        text: "The object as a JSON string."
+        explanation: "Correct. Parameters are strings."
+      - id: c
+        text: "An empty value."
+        explanation: "Not correct. The object is passed on."
+      - id: d
+        text: "The event is stopped."
+        explanation: "Not correct. No error occurs for this."
+    correct_option: b
+    explanation: "Correct. Parameters are strings."
+
+  - id: ats127-010-m03-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Combine bindings"
+    source_readings:
+      - sections/section-010/module-03/course-02-combine-several-bindings.md
+    prompt: "Which kinds can one Trigger list together under bindings?"
+    options:
+      - id: a
+        text: "A TriggerBinding, a ClusterTriggerBinding and inline name and value bindings."
+        explanation: "Correct. The template receives one merged list."
+      - id: b
+        text: "Only one TriggerBinding."
+        explanation: "Not correct. Several are allowed."
+      - id: c
+        text: "Only inline bindings."
+        explanation: "Not correct. References are allowed too."
+      - id: d
+        text: "TriggerBindings of other namespaces only."
+        explanation: "Not correct. The kind decides, not the namespace."
+    correct_option: a
+    explanation: "Correct. The template receives one merged list."
+
+  - id: ats127-010-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Reference a ClusterTriggerBinding"
+    source_readings:
+      - sections/section-010/module-03/course-02-combine-several-bindings.md
+    prompt: "How does a Trigger refer to a ClusterTriggerBinding?"
+    options:
+      - id: a
+        text: "With ref only; the kind is found by name."
+        explanation: "Not correct. The default kind is TriggerBinding."
+      - id: b
+        text: "With a namespace field."
+        explanation: "Not correct. A cluster object has no namespace."
+      - id: c
+        text: "It cannot be referenced."
+        explanation: "Not correct. It can."
+      - id: d
+        text: "With ref and kind: ClusterTriggerBinding."
+        explanation: "Correct. Without the kind, Triggers looks for a namespaced binding."
+    correct_option: d
+    explanation: "Correct. Without the kind, Triggers looks for a namespaced binding."
+
+  - id: ats127-010-m03-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Give a template RBAC for each resource"
+    source_readings:
+      - sections/section-010/module-03/course-03-templates-with-several-resources.md
+    prompt: "A template creates a PipelineRun and a ConfigMap. The ConfigMap is never created, and the response is 202. What is the likely cause?"
+    options:
+      - id: a
+        text: "The PipelineRun blocks ConfigMaps."
+        explanation: "Not correct. Resources are created independently."
+      - id: b
+        text: "202 means everything was created."
+        explanation: "Not correct. 202 means the event was accepted."
+      - id: c
+        text: "The ServiceAccount of the EventListener has no rule to create ConfigMaps."
+        explanation: "Correct. Each resource kind needs its own rule."
+      - id: d
+        text: "ConfigMaps cannot be in a template."
+        explanation: "Not correct. Any kind can, with rights."
+    correct_option: c
+    explanation: "Correct. Each resource kind needs its own rule."
+
+  - id: ats127-010-m03-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use a template default"
+    source_readings:
+      - sections/section-010/module-03/course-04-pipelinerun-options-defaults-and-uid.md
+    prompt: "What does a default on a template parameter cover?"
+    options:
+      - id: a
+        text: "A path in a binding that finds nothing."
+        explanation: "Not correct. A default does not replace a missing path."
+      - id: b
+        text: "A parameter that no binding names."
+        explanation: "Correct. A path that finds nothing is still an error."
+      - id: c
+        text: "A failed interceptor."
+        explanation: "Not correct. Interceptors are separate."
+      - id: d
+        text: "A missing Pipeline."
+        explanation: "Not correct. Defaults are about parameters."
+    correct_option: b
+    explanation: "Correct. A path that finds nothing is still an error."
+
+  - id: ats127-010-m03-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use $(uid)"
+    source_readings:
+      - sections/section-010/module-03/course-04-pipelinerun-options-defaults-and-uid.md
+    prompt: "What is $(uid) in a TriggerTemplate?"
+    options:
+      - id: a
+        text: "A unique string created for each evaluation of the template."
+        explanation: "Correct. It can be used to name resources uniquely."
+      - id: b
+        text: "The event ID."
+        explanation: "Not correct. The event ID is context.eventID or the label."
+      - id: c
+        text: "The UID of the Pipeline."
+        explanation: "Not correct. It is not read from a Pipeline."
+      - id: d
+        text: "The same value for every event."
+        explanation: "Not correct. It is different each time."
+    correct_option: a
+    explanation: "Correct. It can be used to name resources uniquely."
+
+  - id: ats127-010-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Respect label value limits"
+    source_readings:
+      - sections/section-010/module-03/course-04-pipelinerun-options-defaults-and-uid.md
+    prompt: "Why can a branch name such as feature/warp not be used as a label value?"
+    options:
+      - id: a
+        text: "Labels must be uppercase."
+        explanation: "Not correct. Case is not the problem."
+      - id: b
+        text: "Labels cannot come from parameters."
+        explanation: "Not correct. They can."
+      - id: c
+        text: "Branch names are always too long."
+        explanation: "Not correct. The slash is the problem."
+      - id: d
+        text: "A label value cannot contain a slash; annotation values have no such limit."
+        explanation: "Correct. Put branch names in annotations."
+    correct_option: d
+    explanation: "Correct. Put branch names in annotations."
+

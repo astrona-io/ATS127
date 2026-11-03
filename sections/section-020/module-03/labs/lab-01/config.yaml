@@ -1,0 +1,57 @@
+# Repair A Custom Interceptor
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-127-lab-020-03"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton"
+      description: "Installs the tkn CLI 0.46.2, Tekton Pipelines v1.17.1 and Tekton Triggers v0.37.2 with the core interceptors, and starts the webhook client"
+      type: "file"
+      source: "bootstrap/01-install-tekton.sh"
+    - name: "ats-127-lab-020-03-setup"
+      description: "Applies the Pipeline, RBAC, a custom interceptor service, a ClusterInterceptor with a wrong Service name, the template, a binding that reads the wrong extension and the EventListener"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespace starfleet"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-tekton"
+      description: "Waits until every Tekton Deployment and the webhook client are ready"
+      type: "file"
+      source: "testing/wait-for-tekton.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-registration"
+      description: "Confirms the ClusterInterceptor points at an existing Service with a ready pod"
+      type: "file"
+      source: "validation/validate-registration.sh"
+    - name: "validate-branch-push"
+      description: "Confirms a push to main starts a run with the short branch name"
+      type: "file"
+      source: "validation/validate-branch-push.sh"
+    - name: "validate-tag-stopped"
+      description: "Confirms a push to a tag starts nothing"
+      type: "file"
+      source: "validation/validate-tag-stopped.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - nicolaka/netshoot:v0.13

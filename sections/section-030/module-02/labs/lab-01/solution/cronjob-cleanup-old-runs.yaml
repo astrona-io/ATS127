@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cleanup-old-runs
+  namespace: starfleet
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: run-cleaner
+          restartPolicy: Never
+          containers:
+            - name: cleanup
+              image: registry.k8s.io/kubectl:v1.34.0
+              command: ["kubectl"]
+              args:
+                - delete
+                - pipelineruns
+                - -n
+                - starfleet
+                - -l
+                - purpose!=release

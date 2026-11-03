@@ -111,6 +111,90 @@ modules:
         path: sections/section-010/module-01/course-04-summary.md
 
       - type: reading
+        title: "Configure The EventListener"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "Read An EventListener's Spec And Status"
+        path: sections/section-010/module-02/course-01-read-an-eventlistener-spec-and-status.md
+      - type: reading
+        title: "Replicas, Service Type And Pod Template"
+        path: sections/section-010/module-02/course-02-replicas-service-type-and-pod-template.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Scale And Place An EventListener Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 25m
+        topic: triggers-architecture
+        task_kind: build
+        tags: [eventlistener, replicas, pod-template, service-type]
+        learning_goals:
+          - Run two EventListener pods with a team label and container requests and limits
+          - Change the Service type to NodePort through the EventListener spec, not the Service
+          - Prove that a push event still creates a PipelineRun that succeeds
+        resources:
+          - name: "EventListeners"
+            url: https://tekton.dev/docs/triggers/eventlisteners/
+      - type: reading
+        title: "Choose Which Triggers An EventListener Serves"
+        path: sections/section-010/module-02/course-03-choose-which-triggers-an-eventlistener-serves.md
+      - type: reading
+        title: "Logs, Metrics And Timeouts"
+        path: sections/section-010/module-02/course-04-logs-metrics-and-timeouts.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Configure The EventListener"
+        path: sections/section-010/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Bindings And Templates In Depth"
+        path: sections/section-010/module-03/course.md
+      - type: reading
+        title: "Read Values With JSONPath"
+        path: sections/section-010/module-03/course-01-read-values-with-jsonpath.md
+      - type: reading
+        title: "Combine Several Bindings"
+        path: sections/section-010/module-03/course-02-combine-several-bindings.md
+      - type: reading
+        title: "Templates With Several Resources"
+        path: sections/section-010/module-03/course-03-templates-with-several-resources.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Repair A Multi-Resource Template Lab"
+        path: sections/section-010/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: triggers-architecture
+        task_kind: troubleshooting
+        tags: [triggerbinding, triggertemplate, jsonpath, rbac]
+        learning_goals:
+          - Fix a binding path that finds nothing
+          - Give the EventListener the rights to create the extra resource of a template
+          - Prove the repair with a push that creates a run and a ConfigMap
+        resources:
+          - name: "TriggerBindings"
+            url: https://tekton.dev/docs/triggers/triggerbindings/
+          - name: "TriggerTemplates"
+            url: https://tekton.dev/docs/triggers/triggertemplates/
+      - type: reading
+        title: "PipelineRun Options, Defaults And uid"
+        path: sections/section-010/module-03/course-04-pipelinerun-options-defaults-and-uid.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Bindings And Templates In Depth"
+        path: sections/section-010/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
         title: Question
         path: sections/section-010/capstone/labs/lab-01/question.md
       - type: lab
@@ -189,6 +273,90 @@ modules:
         path: sections/section-020/module-01/course-04-summary.md
 
       - type: reading
+        title: "GitLab And Bitbucket Interceptors"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "GitLab Token And Event Types"
+        path: sections/section-020/module-02/course-01-gitlab-token-and-event-types.md
+      - type: reading
+        title: "Bitbucket Server And Bitbucket Cloud"
+        path: sections/section-020/module-02/course-02-bitbucket-server-and-cloud.md
+      - type: reading
+        title: "Normalize Provider Payloads With CEL"
+        path: sections/section-020/module-02/course-03-normalize-provider-payloads-with-cel.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Accept Signed GitLab Pushes Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: interceptors
+        task_kind: build
+        tags: [gitlab, interceptor, cel, secret-token]
+        learning_goals:
+          - Add the gitlab interceptor with a Secret and the Push Hook event type
+          - Stop pushes to branches other than main with a cel interceptor
+          - Read the short branch name from extensions in a binding
+        resources:
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+      - type: reading
+        title: "Several Providers On One EventListener"
+        path: sections/section-020/module-02/course-04-several-providers-one-eventlistener.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: GitLab And Bitbucket Interceptors"
+        path: sections/section-020/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Write A Custom ClusterInterceptor"
+        path: sections/section-020/module-03/course.md
+      - type: reading
+        title: "The Interceptor Contract"
+        path: sections/section-020/module-03/course-01-the-interceptor-contract.md
+      - type: reading
+        title: "Deploy The Interceptor Service"
+        path: sections/section-020/module-03/course-02-deploy-the-interceptor-service.md
+      - type: reading
+        title: "Register A ClusterInterceptor And Use It"
+        path: sections/section-020/module-03/course-03-register-a-clusterinterceptor-and-use-it.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Repair A Custom Interceptor Lab"
+        path: sections/section-020/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: interceptors
+        task_kind: troubleshooting
+        tags: [clusterinterceptor, custom-interceptor, extensions]
+        learning_goals:
+          - Point a ClusterInterceptor at the right Service
+          - Read the extension the service really returns in a binding
+          - Prove that a branch push builds and a tag push does not
+        resources:
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+          - name: "ClusterInterceptors"
+            url: https://tekton.dev/docs/triggers/clusterinterceptors/
+      - type: reading
+        title: "Secure And Troubleshoot A Custom Interceptor"
+        path: sections/section-020/module-03/course-04-secure-and-troubleshoot-a-custom-interceptor.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Write A Custom ClusterInterceptor"
+        path: sections/section-020/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
         title: Question
         path: sections/section-020/capstone/labs/lab-01/question.md
       - type: lab
@@ -265,6 +433,90 @@ modules:
       - type: reading
         title: Summary
         path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Run Lifecycle: Retention And Cleanup"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "What An Event Leaves Behind"
+        path: sections/section-030/module-02/course-01-what-an-event-leaves-behind.md
+      - type: reading
+        title: "Delete Runs By Label And By Age"
+        path: sections/section-030/module-02/course-02-delete-runs-by-label-and-by-age.md
+      - type: reading
+        title: "Automate Cleanup With A CronJob"
+        path: sections/section-030/module-02/course-03-automate-cleanup-with-a-cronjob.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Clean Up Old Runs Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: event-driven-ci
+        task_kind: build
+        tags: [cleanup, cronjob, rbac, retention]
+        learning_goals:
+          - Delete runs by label and keep the release run
+          - Create a ServiceAccount that may delete only PipelineRuns
+          - Schedule the cleanup with a CronJob that has history limits
+        resources:
+          - name: "PipelineRuns"
+            url: https://tekton.dev/docs/pipelines/pipelineruns/
+      - type: reading
+        title: "Retention Labels In The Template"
+        path: sections/section-030/module-02/course-04-retention-labels-in-the-template.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Run Lifecycle: Retention And Cleanup"
+        path: sections/section-030/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Path-Filtered And Multi-Pipeline Triggers"
+        path: sections/section-030/module-03/course.md
+      - type: reading
+        title: "Which Files Did A Push Change"
+        path: sections/section-030/module-03/course-01-which-files-did-a-push-change.md
+      - type: reading
+        title: "Filter On Paths With CEL"
+        path: sections/section-030/module-03/course-02-filter-on-paths-with-cel.md
+      - type: reading
+        title: "Fan Out To Several Pipelines"
+        path: sections/section-030/module-03/course-03-fan-out-to-several-pipelines.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Repair The Docs Trigger Lab"
+        path: sections/section-030/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: event-driven-ci
+        task_kind: troubleshooting
+        tags: [trigger, cel, path-filter, labelselector]
+        learning_goals:
+          - Find why a standalone Trigger is never selected
+          - Correct a path prefix in a CEL filter
+          - Prove that a docs push starts two runs and a code push starts one
+        resources:
+          - name: "Triggers"
+            url: https://tekton.dev/docs/triggers/triggers/
+          - name: "Interceptors"
+            url: https://tekton.dev/docs/triggers/interceptors/
+      - type: reading
+        title: "Edge Cases And Build Unless Docs Only"
+        path: sections/section-030/module-03/course-04-edge-cases-and-build-unless-docs-only.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Path-Filtered And Multi-Pipeline Triggers"
+        path: sections/section-030/module-03/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: Question

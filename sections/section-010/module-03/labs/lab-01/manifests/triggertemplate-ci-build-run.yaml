@@ -1,0 +1,37 @@
+# Creates a PipelineRun of ci-build and a ConfigMap that records the event.
+# The EventListener's ServiceAccount may not create ConfigMaps at the start.
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: ci-build-run
+  namespace: starfleet
+spec:
+  params:
+    - name: repo-url
+    - name: revision
+    - name: branch
+    - name: pusher
+    - name: event
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: ci-build-run-
+      spec:
+        pipelineRef:
+          name: ci-build
+        params:
+          - name: repo-url
+            value: $(tt.params.repo-url)
+          - name: revision
+            value: $(tt.params.revision)
+          - name: branch
+            value: $(tt.params.branch)
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        generateName: event-record-
+      data:
+        revision: $(tt.params.revision)
+        pusher: $(tt.params.pusher)
+        event: $(tt.params.event)

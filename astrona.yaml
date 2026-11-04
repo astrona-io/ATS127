@@ -13,7 +13,7 @@
 training:
   id: ATS127
   title: "Tekton: Triggers, Interceptors & Event-Driven CI"
-  maturity: draft
+  maturity: alpha
   description: >
     Training material covering the Triggers, Interceptors & Event-Driven CI
     domain of the Tekton training path: installing Tekton Triggers on top of

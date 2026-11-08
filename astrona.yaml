@@ -1,12 +1,13 @@
 # Course manifest for ATS127 - Triggers, Interceptors & Event-Driven CI (Tekton).
 #
-# One entry per section under `modules:`. Each section lists, in order: its
-# README, then for each module the landing page (course.md), its parts
-# (course-0N-*.md), and right after the part a lab tests, the lab's
-# question.md reading and the `type: lab` entry. The module's summary page
-# comes last. The section capstone closes the section. Playgrounds are not
-# listed: the landing page's playground marker shows them. solution.md is
-# never listed.
+# One entry per module under `modules:`, in section order. A module lists,
+# in order: the section README when it opens a section, its landing page
+# (course.md), its parts (course-0N-*.md), and right after the part a lab
+# tests, the lab's question.md reading and the `type: lab` entry. The
+# module's summary page and knowledge check come last. The last module of a
+# section also carries the section capstone and the section knowledge check.
+# Playgrounds are not listed: the playground marker on the landing page shows
+# them. solution.md is never listed.
 #
 # Every `path:` is relative to this file.
 
@@ -58,14 +59,14 @@ modules:
         title: "How This Course Is Made"
         path: sections/intro/course-03-how-this-course-is-made.md
 
-  - id: module-010
-    title: "Tekton Triggers Architecture And RBAC"
+  - id: module-010-01
+    title: "Turn A Webhook Into A PipelineRun"
     description: >
-      Installing Tekton Triggers and its core interceptors, the Triggers
-      resources, the EventListener with its Deployment, Service and pod, the
-      ServiceAccount and the RBAC from the Triggers release, and mapping event
-      fields to PipelineRun parameters with TriggerBindings,
-      ClusterTriggerBindings and TriggerTemplates.
+      Module 1 of 3 in Tekton Triggers Architecture And RBAC. Parts: Install
+      Tekton Triggers And Meet Its Resources; The EventListener, Its
+      ServiceAccount And RBAC; TriggerBindings, TriggerTemplates And
+      tt.params. Graded lab: Create An EventListener For Push Events. Opens
+      with the section overview.
 
     content:
       - type: reading
@@ -110,6 +111,16 @@ modules:
         title: Summary
         path: sections/section-010/module-01/course-04-summary.md
 
+  - id: module-010-02
+    title: "Configure The EventListener"
+    description: >
+      Module 2 of 3 in Tekton Triggers Architecture And RBAC. Parts: Read An
+      EventListener's Spec And Status; Replicas, Service Type And Pod
+      Template; Choose Which Triggers An EventListener Serves; Logs, Metrics
+      And Timeouts. Graded lab: Scale And Place An EventListener. Ends with a
+      knowledge check.
+
+    content:
       - type: reading
         title: "Configure The EventListener"
         path: sections/section-010/module-02/course.md
@@ -151,6 +162,16 @@ modules:
         path: sections/section-010/module-02/quiz.yaml
         pass_score: 70
 
+  - id: module-010-03
+    title: "Bindings And Templates In Depth"
+    description: >
+      Module 3 of 3 in Tekton Triggers Architecture And RBAC. Parts: Read
+      Values With JSONPath; Combine Several Bindings; Templates With Several
+      Resources; PipelineRun Options, Defaults And uid. Graded lab: Repair A
+      Multi-Resource Template. Ends with a knowledge check. Closes the section
+      with its capstone lab and section knowledge check.
+
+    content:
       - type: reading
         title: "Bindings And Templates In Depth"
         path: sections/section-010/module-03/course.md
@@ -221,13 +242,13 @@ modules:
         path: sections/section-010/quiz.yaml
         pass_score: 70
 
-  - id: module-020
-    title: "Verify And Filter Events With Interceptors"
+  - id: module-020-01
+    title: "Verify And Filter Webhooks With Interceptors"
     description: >
-      How interceptors and ClusterInterceptors work and where a rejected event
-      leaves its trace, verifying GitHub webhooks with an HMAC secret and
-      eventTypes, the GitLab and Bitbucket interceptors, and filtering and
-      enriching events with CEL filters and overlays.
+      Module 1 of 3 in Verify And Filter Events With Interceptors. Parts: How
+      Interceptors Work; Verify GitHub Webhooks With An HMAC Secret; Filter
+      And Enrich Events With CEL. Graded lab: Repair Signature Checks And A
+      CEL Filter. Opens with the section overview.
 
     content:
       - type: reading
@@ -272,6 +293,16 @@ modules:
         title: Summary
         path: sections/section-020/module-01/course-04-summary.md
 
+  - id: module-020-02
+    title: "GitLab And Bitbucket Interceptors"
+    description: >
+      Module 2 of 3 in Verify And Filter Events With Interceptors. Parts:
+      GitLab Token And Event Types; Bitbucket Server And Bitbucket Cloud;
+      Normalize Provider Payloads With CEL; Several Providers On One
+      EventListener. Graded lab: Accept Signed GitLab Pushes. Ends with a
+      knowledge check.
+
+    content:
       - type: reading
         title: "GitLab And Bitbucket Interceptors"
         path: sections/section-020/module-02/course.md
@@ -313,6 +344,17 @@ modules:
         path: sections/section-020/module-02/quiz.yaml
         pass_score: 70
 
+  - id: module-020-03
+    title: "Write A Custom ClusterInterceptor"
+    description: >
+      Module 3 of 3 in Verify And Filter Events With Interceptors. Parts: The
+      Interceptor Contract; Deploy The Interceptor Service; Register A
+      ClusterInterceptor And Use It; Secure And Troubleshoot A Custom
+      Interceptor. Graded lab: Repair A Custom Interceptor. Ends with a
+      knowledge check. Closes the section with its capstone lab and section
+      knowledge check.
+
+    content:
       - type: reading
         title: "Write A Custom ClusterInterceptor"
         path: sections/section-020/module-03/course.md
@@ -383,13 +425,13 @@ modules:
         path: sections/section-020/quiz.yaml
         pass_score: 70
 
-  - id: module-030
-    title: "Event-Driven CI End To End"
+  - id: module-030-01
+    title: "Run CI On Push And Pull Request Events"
     description: >
-      The fields of GitHub push and pull request events, standalone Triggers
-      selected by an EventListener's label selector, a pull request Trigger
-      next to a push Trigger, Trigger ServiceAccounts and impersonation, and
-      tracing events by their event ID and cleaning up event-driven runs.
+      Module 1 of 3 in Event-Driven CI End To End. Parts: GitHub Push And Pull
+      Request Payloads; One EventListener, Several Triggers; Trace And Clean
+      Up Event-Driven Runs. Graded lab: Add A Pull Request Trigger. Opens with
+      the section overview.
 
     content:
       - type: reading
@@ -434,6 +476,15 @@ modules:
         title: Summary
         path: sections/section-030/module-01/course-04-summary.md
 
+  - id: module-030-02
+    title: "Run Lifecycle: Retention And Cleanup"
+    description: >
+      Module 2 of 3 in Event-Driven CI End To End. Parts: What An Event Leaves
+      Behind; Delete Runs By Label And By Age; Automate Cleanup With A
+      CronJob; Retention Labels In The Template. Graded lab: Clean Up Old
+      Runs. Ends with a knowledge check.
+
+    content:
       - type: reading
         title: "Run Lifecycle: Retention And Cleanup"
         path: sections/section-030/module-02/course.md
@@ -475,6 +526,16 @@ modules:
         path: sections/section-030/module-02/quiz.yaml
         pass_score: 70
 
+  - id: module-030-03
+    title: "Path-Filtered And Multi-Pipeline Triggers"
+    description: >
+      Module 3 of 3 in Event-Driven CI End To End. Parts: Which Files Did A
+      Push Change; Filter On Paths With CEL; Fan Out To Several Pipelines;
+      Edge Cases And Build Unless Docs Only. Graded lab: Repair The Docs
+      Trigger. Ends with a knowledge check. Closes the section with its
+      capstone lab and section knowledge check.
+
+    content:
       - type: reading
         title: "Path-Filtered And Multi-Pipeline Triggers"
         path: sections/section-030/module-03/course.md
